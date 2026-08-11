@@ -1,0 +1,50 @@
+/* @font-face {
+  font-family: myFont; 
+  src: url(sansation_light.woff);
+} */
+
+body {
+    background-color: #492f23;
+    color: white;
+    font-family: "Lilita One", sans-serif;
+    font-style: normal;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #fffefe;
+    margin-left: 20px;
+}
+
+.navbar ul {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-top: 20px;
+    margin-right: 20px;
+}
+
+.navbar a {
+    text-decoration: none;
+    font-size: 24px;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    font-size: 60px;
+}
+
+h3 {
+    font-size: 30px;
+}
