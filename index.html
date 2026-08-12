@@ -1,38 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviso - Donate food with love</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="style.css">
-    <title>Serviso</title>
 </head>
-
-<header>
-    <div class="logo">
-    <a href="index.html">MyLogo</a>
-    </div>
-
-    <nav class="navbar">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="#">Donate</a></li>
-      <li><a href="#">About us</a></li>
-      <li><a href="#">Contact Us</a></li>
-    </ul>
-    </nav>
-</header>
-
 <body>
 
-    <h1>Serviso</h1>
+    <!-- header and navbar -->
 
-    <h3>Always present to serve the society</h3>
+    <header id="header">
+        <div class="logo">
+            <a href="#home">Serviso.</a>
+        </div>
 
-    <p>We redistrubute the food to the right person in need, don't let your food go to waste donate to us for the betterment of society</p>
+        <!-- Hamburger Icon -->
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
 
+        <nav class="navbar">
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#donate">Donate</a></li>
+                <li><a href="#app">Get App</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="section">
+        <div class="content fade-left">
+            <h1>Serviso</h1>
+            <h3>Always present to serve the society</h3>
+            <p>We redistribute excess food to the right people in need. Don't let your food go to waste, donate to us for the betterment of society.</p>
+            <a href="#donate" class="btn-3d">Donate Now</a>
+        </div>
+        <div class="image-container fade-right">
+            <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Volunteers distributing food" class="img-3d">
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section reverse">
+        <div class="content fade-right">
+            <h2>About Us</h2>
+            <h3>Our hearts are dedicated for Humanity</h3>
+            <p>Serviso is a platform dedicated to connecting restaurants, event organizers, and generous individuals with verified NGOs. When you have surplus food, just let us know. We notify nearby NGOs immediately, making food distribution faster and easier than ever before.</p>
+            <a href="#contact" class="btn-3d btn-secondary">Learn More</a>
+        </div>
+        <div class="image-container fade-left">
+            <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.bishophouse.com%2Fwp-content%2Fuploads%2F2026%2F05%2FTeam-engaging-at-table-ws.jpeg&f=1&nofb=1&ipt=aa23af81439d31cf3aa149bf1883e7ba033630949fb5b8866815b562bbc3e2a9" alt="Team Talking" class="img-3d">
+        </div>
+    </section>
+
+    <!-- Donate Section -->
+    <section id="donate" class="section">
+        <div class="content fade-left">
+            <h2>Make a Donation</h2>
+            <h3>Every meal counts</h3>
+            <p>Whether you're a restaurant with end-of-day surplus, or someone hosting a large gathering, you can list your available food here. Our network of NGOs is always on standby to pick up and distribute.</p>
+        </div>
+        
+        <div class="image-container fade-right">
+            <div class="contact-card-wrapper">
+                <form class="contact-form">
+                    <div class="input-group">
+                        <label for="donor-name">Name / Restaurant Name</label>
+                        <input type="text" id="donor-name" placeholder="e.g. Krabs and Chill" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="food-qty">Food Quantity</label>
+                        <input type="text" id="food-qty" placeholder="e.g. Meals for 50 people" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="food-qty">Address</label>
+                        <textarea id="food-qty" placeholder="e.g. rosevilla, chandnagar" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-3d">List Food Availability</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download App Section -->
+    <section id="app" class="section reverse">
+        <div class="content fade-right">
+            <h2>Download Our App</h2>
+            <h3>Donating made pocket-sized</h3>
+            <p>Get real-time notifications, track your donations, and see the impact you're making in your community. Available now on iOS and Android.</p>
+            <div class="app-buttons">
+                <a href="#" class="btn-3d app-btn">
+                    <i class="fa-brands fa-apple"></i> App Store
+                </a>
+                <a href="#" class="btn-3d app-btn">
+                    <i class="fa-brands fa-google-play"></i> Google Play
+                </a>
+            </div>
+        </div>
+        <div class="image-container fade-left">
+            <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpsfiles.com%2Fwp-content%2Fuploads%2F2023%2F05%2FFree-Apple-Android-App-Icon-Mockup-PSD.jpg&f=1&nofb=1&ipt=9b281a57e38f248cb42a7e3dd21b9cf0ee51c82b463d3a2afa0c764e973aaefd" alt="Smartphone App Mockup" class="img-3d app-mockup">
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="content fade-left">
+        <h2>Contact Us</h2>
+        <h3>We'd love to hear from you</h3>
+        <p>Are you an NGO wanting to join our network? Or a restaurant looking for a long-term partnership? Reach out to our team.</p>
+        
+        <ul class="contact-info">
+            <li data-copy="Ramrao Adik Institute of Technology" title="Click to copy">
+                <i class="fa-solid fa-map-location"></i> 
+                <span>Ramrao Adik Institute of Technology</span>
+                <span class="copy-badge">Copied!</span>
+            </li>
+            <li data-copy="support@serviso.org" title="Click to copy">
+                <i class="fa-solid fa-envelope"></i> 
+                <span>support@serviso.org</span>
+                <span class="copy-badge">Copied!</span>
+            </li>
+            <li data-copy="022277095747" title="Click to copy">
+                <i class="fa-solid fa-phone"></i> 
+                <span>022277095747</span>
+                <span class="copy-badge">Copied!</span>
+            </li>
+        </ul>
+        </div>
+
+        <div class="image-container fade-right">
+            <div class="contact-card-wrapper">
+                <form class="contact-form">
+                    <div class="input-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" placeholder="First name and Last name">
+                    </div>
+                    <div class="input-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" placeholder="Example@email.com">
+                    </div>
+                    <div class="input-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" rows="5" placeholder="It's amazing..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-3d">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="social-icons">
+            <a href="#" class="social-link" aria-label="Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="Facebook">
+                <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="Twitter">
+                <i class="fa-brands fa-twitter"></i>
+            </a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
