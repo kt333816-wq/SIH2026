@@ -14,8 +14,7 @@
 </head>
 <body>
 
-    <!-- header and navbar -->
-
+    <!-- Header and Navbar -->
     <header id="header">
         <div class="logo">
             <a href="#home">Serviso.</a>
@@ -78,17 +77,17 @@
                 <form class="contact-form">
                     <div class="input-group">
                         <label for="donor-name">Name / Restaurant Name</label>
-                        <input type="text" id="donor-name" placeholder="e.g. Krabs and Chill" required>
+                        <input type="text" id="donor-name" name="donor_name" placeholder="e.g. Krabs and Chill" required>
                     </div>
                     
                     <div class="input-group">
                         <label for="food-qty">Food Quantity</label>
-                        <input type="text" id="food-qty" placeholder="e.g. Meals for 50 people" required>
+                        <input type="text" id="food-qty" name="food_quantity" placeholder="e.g. Meals for 50 people" required>
                     </div>
 
                     <div class="input-group">
-                        <label for="food-qty">Address</label>
-                        <textarea id="food-qty" placeholder="e.g. rosevilla, chandnagar" required></textarea>
+                        <label for="donor-address">Address</label>
+                        <textarea id="donor-address" name="address" placeholder="e.g. rosevilla, chandnagar" required></textarea>
                     </div>
                     
                     <button type="submit" class="btn-3d">List Food Availability</button>
@@ -120,43 +119,44 @@
     <!-- Contact Section -->
     <section id="contact" class="section">
         <div class="content fade-left">
-        <h2>Contact Us</h2>
-        <h3>We'd love to hear from you</h3>
-        <p>Are you an NGO wanting to join our network? Or a restaurant looking for a long-term partnership? Reach out to our team.</p>
-        
-        <ul class="contact-info">
-            <li data-copy="Ramrao Adik Institute of Technology" title="Click to copy">
-                <i class="fa-solid fa-map-location"></i> 
-                <span>Ramrao Adik Institute of Technology</span>
-                <span class="copy-badge">Copied!</span>
-            </li>
-            <li data-copy="support@serviso.org" title="Click to copy">
-                <i class="fa-solid fa-envelope"></i> 
-                <span>support@serviso.org</span>
-                <span class="copy-badge">Copied!</span>
-            </li>
-            <li data-copy="022277095747" title="Click to copy">
-                <i class="fa-solid fa-phone"></i> 
-                <span>022277095747</span>
-                <span class="copy-badge">Copied!</span>
-            </li>
-        </ul>
+            <h2>Contact Us</h2>
+            <h3>We'd love to hear from you</h3>
+            <p>Are you an NGO wanting to join our network? Or a restaurant looking for a long-term partnership? Reach out to our team.</p>
+            
+            <ul class="contact-info">
+                <li data-copy="Ramrao Adik Institute of Technology" title="Click to copy">
+                    <i class="fa-solid fa-map-location"></i> 
+                    <span>Ramrao Adik Institute of Technology</span>
+                    <span class="copy-badge">Copied!</span>
+                </li>
+                <li data-copy="support@serviso.org" title="Click to copy">
+                    <i class="fa-solid fa-envelope"></i> 
+                    <span>support@serviso.org</span>
+                    <span class="copy-badge">Copied!</span>
+                </li>
+                <li data-copy="022277095747" title="Click to copy">
+                    <i class="fa-solid fa-phone"></i> 
+                    <span>022277095747</span>
+                    <span class="copy-badge">Copied!</span>
+                </li>
+            </ul>
         </div>
 
         <div class="image-container fade-right">
             <div class="contact-card-wrapper">
-                <form class="contact-form">
+                <!-- Formspree Contact Form Integration -->
+                <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="contact-form">
                     <div class="input-group">
                         <label for="name">Your Name</label>
-                        <input type="text" id="name" placeholder="First name and Last name">
+                        <input type="text" id="name" name="name" placeholder="First name and Last name" required>
                     </div>
                     <div class="input-group">
                         <label for="email">Your Email</label>
-                        <input type="email" id="email" placeholder="Example@email.com">
+                        <input type="email" id="email" name="email" placeholder="Example@email.com" required>
                     </div>
                     <div class="input-group">
                         <label for="message">Your Message</label>
-                        <textarea id="message" rows="5" placeholder="It's amazing..."></textarea>
+                        <textarea id="message" name="message" rows="5" placeholder="It's amazing..." required></textarea>
                     </div>
                     <button type="submit" class="btn-3d">Send Message</button>
                 </form>
