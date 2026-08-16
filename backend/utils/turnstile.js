@@ -2,7 +2,7 @@ async function verifyTurnstile(token, remoteIp) {
     if (!token) return false;
 
     const body = new URLSearchParams();
-    body.append('secret', process.env.TURNSTILE_SECRET_KEY);
+    body.append('secret', process.env.0x4AAAAAAER9cxcc3f80B4HYF06hqrFOtEQ);
     body.append('response', token);
     if (remoteIp) body.append('remoteip', remoteIp);
 
