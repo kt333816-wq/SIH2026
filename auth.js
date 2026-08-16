@@ -24,23 +24,47 @@ const ROLE_LABELS = {
     social_worker_politician: 'Signing up as a social worker / public representative (receiver)'
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    initTabs();
-    initCategorySelection();
-    initRoleSelection();
-    initSignupForm();
-    initOtpForm();
-    initLoginForm();
-    initSessionState();
-    initDonateForm();
+// Belt-and-braces: block the default browser submit on the donate form the
+// instant this script loads, before anything else runs. If everything else
+// in this file works fine, initDonateForm() below replaces this with the
+// full logged-in-check/gate behavior. If something else in this file throws,
+// this listener alone still stops the "reload the page and jump to whatever
+// #hash happens to be in the URL" behavior.
+document.addEventListener('submit', (e) => {
+    if (e.target && e.target.id === 'donate-form' && !e.target.dataset.servisoBound) {
+        e.preventDefault();
+    }
+}, true);
 
-    document.getElementById('back-to-category').addEventListener('click', () => showSignupStep('category'));
-    document.getElementById('back-to-role').addEventListener('click', () => showSignupStep('role'));
-    document.getElementById('go-to-login').addEventListener('click', () => {
-        switchTab('login');
-        showSignupStep('category');
+document.addEventListener('DOMContentLoaded', () => {
+    const safeInit = (name, fn) => {
+        try { fn(); } catch (err) { console.error(`Serviso auth: ${name} failed to initialize:`, err); }
+    };
+
+    safeInit('initTabs', initTabs);
+    safeInit('initCategorySelection', initCategorySelection);
+    safeInit('initRoleSelection', initRoleSelection);
+    safeInit('initSignupForm', initSignupForm);
+    safeInit('initOtpForm', initOtpForm);
+    safeInit('initLoginForm', initLoginForm);
+    safeInit('initSessionState', initSessionState);
+    safeInit('initDonateForm', initDonateForm);
+
+    safeInit('backToCategory', () => {
+        document.getElementById('back-to-category').addEventListener('click', () => showSignupStep('category'));
     });
-    document.getElementById('resend-otp').addEventListener('click', resendOtp);
+    safeInit('backToRole', () => {
+        document.getElementById('back-to-role').addEventListener('click', () => showSignupStep('role'));
+    });
+    safeInit('goToLogin', () => {
+        document.getElementById('go-to-login').addEventListener('click', () => {
+            switchTab('login');
+            showSignupStep('category');
+        });
+    });
+    safeInit('resendOtpBtn', () => {
+        document.getElementById('resend-otp').addEventListener('click', resendOtp);
+    });
 });
 
 // ---------------------------------------------------------------------------
@@ -92,6 +116,7 @@ function initSessionState() {
 function initDonateForm() {
     const form = document.getElementById('donate-form');
     if (!form) return;
+    form.dataset.servisoBound = 'true';
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -150,7 +175,8 @@ function initCategorySelection() {
             const category = card.dataset.category; // 'donor' | 'receiver'
             document.getElementById('role-step-heading').textContent =
                 category === 'donor' ? 'What kind of donor?' : 'What kind of receiver?';
-            document.getElementById('role-step-sub').textContent = 'Choose the option that fits you';
+            document.getElementById('role-step-sub').textContent =
+                category === 'donor' ? 'Choose the option that fits you' : 'Choose the option that fits you';
 
             document.getElementById('donor-role-grid').classList.toggle('visible', category === 'donor');
             document.getElementById('receiver-role-grid').classList.toggle('visible', category === 'receiver');
