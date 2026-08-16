@@ -24,167 +24,22 @@ const ROLE_LABELS = {
     social_worker_politician: 'Signing up as a social worker / public representative (receiver)'
 };
 
-// Belt-and-braces: block the default browser submit on the donate form the
-// instant this script loads, before anything else runs. If everything else
-// in this file works fine, initDonateForm() below replaces this with the
-// full logged-in-check/gate behavior. If something else in this file throws,
-// this listener alone still stops the "reload the page and jump to whatever
-// #hash happens to be in the URL" behavior.
-document.addEventListener('submit', (e) => {
-    if (e.target && e.target.id === 'donate-form' && !e.target.dataset.servisoBound) {
-        e.preventDefault();
-    }
-}, true);
-
 document.addEventListener('DOMContentLoaded', () => {
-    const safeInit = (name, fn) => {
-        try { fn(); } catch (err) { console.error(`Serviso auth: ${name} failed to initialize:`, err); }
-    };
+    initTabs();
+    initCategorySelection();
+    initRoleSelection();
+    initSignupForm();
+    initOtpForm();
+    initLoginForm();
 
-    safeInit('initTabs', initTabs);
-    safeInit('initCategorySelection', initCategorySelection);
-    safeInit('initRoleSelection', initRoleSelection);
-    safeInit('initSignupForm', initSignupForm);
-    safeInit('initOtpForm', initOtpForm);
-    safeInit('initLoginForm', initLoginForm);
-    safeInit('initSessionState', initSessionState);
-    safeInit('initDonateForm', initDonateForm);
-
-    safeInit('backToCategory', () => {
-        document.getElementById('back-to-category').addEventListener('click', () => showSignupStep('category'));
+    document.getElementById('back-to-category').addEventListener('click', () => showSignupStep('category'));
+    document.getElementById('back-to-role').addEventListener('click', () => showSignupStep('role'));
+    document.getElementById('go-to-login').addEventListener('click', () => {
+        switchTab('login');
+        showSignupStep('category');
     });
-    safeInit('backToRole', () => {
-        document.getElementById('back-to-role').addEventListener('click', () => showSignupStep('role'));
-    });
-    safeInit('goToLogin', () => {
-        document.getElementById('go-to-login').addEventListener('click', () => {
-            switchTab('login');
-            showSignupStep('category');
-        });
-    });
-    safeInit('resendOtpBtn', () => {
-        document.getElementById('resend-otp').addEventListener('click', resendOtp);
-    });
+    document.getElementById('resend-otp').addEventListener('click', resendOtp);
 });
-
-// ---------------------------------------------------------------------------
-// Session state: if a valid token is already stored, skip login/signup
-// entirely and show the person their own interface instead.
-// ---------------------------------------------------------------------------
-function getStoredUser() {
-    try {
-        const token = localStorage.getItem('serviso_token');
-        const user = JSON.parse(localStorage.getItem('serviso_user') || 'null');
-        return token && user ? user : null;
-    } catch {
-        return null;
-    }
-}
-
-function initSessionState() {
-    const user = getStoredUser();
-    const formsWrapper = document.getElementById('auth-forms-wrapper');
-    const loggedInPanel = document.getElementById('logged-in-panel');
-
-    if (!user) {
-        formsWrapper.style.display = '';
-        loggedInPanel.style.display = 'none';
-        return;
-    }
-
-    formsWrapper.style.display = 'none';
-    loggedInPanel.style.display = 'block';
-    document.getElementById('logged-in-name').textContent = user.name;
-    document.getElementById('logged-in-role-label').textContent =
-        user.role === 'donor' ? "You're signed in as a donor." : "You're signed in as a receiver.";
-
-    const donateLink = document.getElementById('logged-in-donate-link');
-    if (user.role === 'donor') donateLink.style.display = 'inline-block';
-
-    document.getElementById('logout-btn').addEventListener('click', () => {
-        localStorage.removeItem('serviso_token');
-        localStorage.removeItem('serviso_user');
-        window.location.reload();
-    });
-}
-
-// ---------------------------------------------------------------------------
-// Donate form: only a logged-in donor can actually submit a listing.
-// Anyone else gets sent up to the login/signup card instead of silently
-// failing or pretending it worked.
-// ---------------------------------------------------------------------------
-function initDonateForm() {
-    const form = document.getElementById('donate-form');
-    if (!form) return;
-    form.dataset.servisoBound = 'true';
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const alertEl = document.getElementById('donate-alert');
-        const showDonateAlert = (msg, isError = true) => {
-            alertEl.textContent = msg;
-            alertEl.classList.remove('hidden');
-            alertEl.classList.toggle('error', isError);
-        };
-
-        const user = getStoredUser();
-        const token = localStorage.getItem('serviso_token');
-
-        if (!user || !token) {
-            showDonateAlert("You'll need to log in or sign up before listing food - taking you there now.");
-            window.location.hash = '#home';
-            document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
-            return;
-        }
-
-        if (user.role !== 'donor') {
-            showDonateAlert('Only donor accounts can list food. You\'re signed in as a receiver.');
-            return;
-        }
-
-        const foodQuantity = document.getElementById('food-qty').value.trim();
-        const address = document.getElementById('donor-address').value.trim();
-
-        try {
-            const res = await fetch(`${API_BASE}/listings`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ food_quantity: foodQuantity, address })
-            });
-            const data = await res.json();
-
-            if (!res.ok) {
-                showDonateAlert(data.error || 'Could not create the listing');
-                return;
-            }
-
-            showDonateAlert('Listing posted - thank you!', false);
-            form.reset();
-        } catch (err) {
-            showDonateAlert('Could not reach the server. Please try again.');
-        }
-    });
-}
-
-function initCategorySelection() {
-    document.querySelectorAll('.category-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const category = card.dataset.category; // 'donor' | 'receiver'
-            document.getElementById('role-step-heading').textContent =
-                category === 'donor' ? 'What kind of donor?' : 'What kind of receiver?';
-            document.getElementById('role-step-sub').textContent =
-                category === 'donor' ? 'Choose the option that fits you' : 'Choose the option that fits you';
-
-            document.getElementById('donor-role-grid').classList.toggle('visible', category === 'donor');
-            document.getElementById('receiver-role-grid').classList.toggle('visible', category === 'receiver');
-
-            showSignupStep('role');
-        });
-    });
-}
 
 function initTabs() {
     document.querySelectorAll('.auth-tab').forEach(tab => {
@@ -197,6 +52,22 @@ function switchTab(name) {
     document.getElementById('panel-login').classList.toggle('active', name === 'login');
     document.getElementById('panel-signup').classList.toggle('active', name === 'signup');
     clearAlert();
+}
+
+function initCategorySelection() {
+    document.querySelectorAll('.category-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const category = card.dataset.category; // 'donor' | 'receiver'
+            document.getElementById('role-step-heading').textContent =
+                category === 'donor' ? 'What kind of donor?' : 'What kind of receiver?';
+            document.getElementById('role-step-sub').textContent = 'Choose the option that fits you';
+
+            document.getElementById('donor-role-grid').classList.toggle('visible', category === 'donor');
+            document.getElementById('receiver-role-grid').classList.toggle('visible', category === 'receiver');
+
+            showSignupStep('role');
+        });
+    });
 }
 
 function initRoleSelection() {
@@ -364,8 +235,7 @@ function initLoginForm() {
 
             localStorage.setItem('serviso_token', data.token);
             localStorage.setItem('serviso_user', JSON.stringify(data.user));
-            initSessionState();
-            clearAlert();
+            window.location.href = 'index.html';
         } catch (err) {
             showAlert('Could not reach the server. Please try again.');
         }
