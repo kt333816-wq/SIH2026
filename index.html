@@ -11,14 +11,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
+    <!-- Header and Navbar -->
     <header id="header">
         <div class="logo">
             <a href="#home">Serviso.</a>
         </div>
 
+        <!-- Hamburger Icon -->
         <div class="hamburger">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -32,23 +36,181 @@
                 <li><a href="#donate">Donate</a></li>
                 <li><a href="#app">Get App</a></li>
                 <li><a href="#contact">Contact Us</a></li>
-                <li><a href="auth.html" class="nav-auth-link">Login / Sign Up</a></li>
             </ul>
         </nav>
     </header>
 
-    <section id="home" class="section">
-        <div class="content fade-left">
+    <!-- Home Section: full-page login/signup interface -->
+    <section id="home" class="section home-auth-section">
+
+        <div class="home-intro fade-left">
             <h1>Serviso</h1>
             <h3>Always present to serve the society</h3>
-            <p>We redistribute excess food to the right people in need. Don't let your food go to waste, donate to us for the betterment of society.</p>
-            <a href="auth.html" class="btn-3d">Donate Now</a>
+            <p>We redistribute excess food to the right people in need. Log in or create an account below to get started.</p>
         </div>
-        <div class="image-container fade-right">
-            <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Volunteers distributing food" class="img-3d">
+
+        <div class="auth-card hero-auth-card fade-right" id="auth-card-root">
+
+            <!-- Shown only when a valid session exists - replaces the tabs/forms below -->
+            <div id="logged-in-panel" class="signup-step" style="display:none;">
+                <i class="fa-solid fa-circle-user success-icon"></i>
+                <h2>Welcome back, <span id="logged-in-name"></span></h2>
+                <p class="auth-sub" id="logged-in-role-label"></p>
+                <a href="#donate" class="btn-3d" id="logged-in-donate-link" style="display:none;">List Food Availability</a>
+                <button type="button" class="btn-3d btn-secondary" id="logout-btn">Log Out</button>
+            </div>
+
+            <div id="auth-forms-wrapper">
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Log In</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+
+            <p id="auth-alert" class="auth-alert hidden"></p>
+
+            <!-- ============ LOGIN ============ -->
+            <section id="panel-login" class="auth-panel active">
+                <h2>Welcome back</h2>
+                <p class="auth-sub">Log in to your Serviso account</p>
+
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required placeholder="you@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required placeholder="••••••••">
+                    </div>
+
+                    <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY" data-callback="onLoginTurnstile"></div>
+
+                    <button type="submit" class="btn-3d">Log In</button>
+                </form>
+            </section>
+
+            <!-- ============ SIGNUP ============ -->
+            <section id="panel-signup" class="auth-panel">
+
+                <div id="signup-step-category" class="signup-step active">
+                    <h2>Join Serviso</h2>
+                    <p class="auth-sub">Are you giving food away, or receiving it for distribution?</p>
+
+                    <div class="category-grid">
+                        <button type="button" class="category-card" data-category="donor">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                            <span class="role-title">I'm a Donor</span>
+                            <span class="role-desc">Restaurants, canteens, or individuals with surplus food to give.</span>
+                        </button>
+                        <button type="button" class="category-card" data-category="receiver">
+                            <i class="fa-solid fa-people-carry-box"></i>
+                            <span class="role-title">I'm a Receiver</span>
+                            <span class="role-desc">NGOs and community reps who distribute food to people in need.</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="signup-step-role" class="signup-step">
+                    <button type="button" class="back-link" id="back-to-category"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                    <h2 id="role-step-heading">What type of account?</h2>
+                    <p class="auth-sub" id="role-step-sub"></p>
+
+                    <div class="role-grid" id="donor-role-grid">
+                        <button type="button" class="role-card" data-role="donor" data-subrole="civilian">
+                            <i class="fa-solid fa-user"></i>
+                            <span class="role-title">Civilian Donor</span>
+                            <span class="role-desc">I want to donate food occasionally. No documents needed.</span>
+                        </button>
+                        <button type="button" class="role-card" data-role="donor" data-subrole="restaurant_canteen">
+                            <i class="fa-solid fa-utensils"></i>
+                            <span class="role-title">Restaurant / Govt Canteen</span>
+                            <span class="role-desc">Regular surplus donor. Requires a license upload.</span>
+                        </button>
+                    </div>
+
+                    <div class="role-grid" id="receiver-role-grid">
+                        <button type="button" class="role-card" data-role="receiver" data-subrole="ngo_head">
+                            <i class="fa-solid fa-people-group"></i>
+                            <span class="role-title">NGO Head</span>
+                            <span class="role-desc">Receive on behalf of a registered NGO. Requires registration proof.</span>
+                        </button>
+                        <button type="button" class="role-card" data-role="receiver" data-subrole="social_worker_politician">
+                            <i class="fa-solid fa-id-card"></i>
+                            <span class="role-title">Social Worker / Public Rep.</span>
+                            <span class="role-desc">Receive food for community distribution. Requires Aadhaar.</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="signup-step-details" class="signup-step">
+                    <button type="button" class="back-link" id="back-to-role"><i class="fa-solid fa-arrow-left"></i> Change account type</button>
+                    <h2>Your details</h2>
+                    <p class="auth-sub" id="selected-role-label"></p>
+
+                    <form id="signup-form">
+                        <div class="input-group">
+                            <label for="su-name">Full Name</label>
+                            <input type="text" id="su-name" required placeholder="As it appears on your ID">
+                        </div>
+                        <div class="input-group">
+                            <label for="su-email">Email</label>
+                            <input type="email" id="su-email" required placeholder="you@example.com">
+                        </div>
+                        <div class="input-group">
+                            <label for="su-mobile">Mobile Number</label>
+                            <input type="tel" id="su-mobile" required placeholder="10-digit mobile number">
+                        </div>
+                        <div class="input-group">
+                            <label for="su-password">Password</label>
+                            <input type="password" id="su-password" required minlength="8" placeholder="At least 8 characters">
+                        </div>
+
+                        <div class="input-group conditional-field" id="field-aadhaar">
+                            <label for="su-aadhaar">Aadhaar Number</label>
+                            <input type="text" id="su-aadhaar" inputmode="numeric" maxlength="12" placeholder="12-digit Aadhaar number">
+                            <span class="field-hint">We validate this is a correctly formatted Aadhaar number. Final identity checks happen manually with your uploaded document.</span>
+                        </div>
+
+                        <div class="input-group conditional-field" id="field-document">
+                            <label for="su-document" id="document-label">Upload Document</label>
+                            <input type="file" id="su-document" accept=".pdf,.jpg,.jpeg,.png">
+                            <span class="field-hint">PDF, JPG, or PNG. Max 5MB. Reviewed manually by our team - you can log in right away, but false documents will get your account suspended.</span>
+                        </div>
+
+                        <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY" data-callback="onSignupTurnstile"></div>
+
+                        <button type="submit" class="btn-3d">Create Account</button>
+                    </form>
+                </div>
+
+                <div id="signup-step-otp" class="signup-step">
+                    <h2>Check your email</h2>
+                    <p class="auth-sub">We sent a 6-digit code to <strong id="otp-email-display"></strong></p>
+
+                    <form id="otp-form">
+                        <div class="input-group">
+                            <label for="otp-code">Verification Code</label>
+                            <input type="text" id="otp-code" inputmode="numeric" maxlength="6" required placeholder="000000" class="otp-input">
+                        </div>
+                        <button type="submit" class="btn-3d">Verify Email</button>
+                        <button type="button" id="resend-otp" class="btn-3d btn-secondary">Resend Code</button>
+                    </form>
+                </div>
+
+                <div id="signup-step-done" class="signup-step">
+                    <i class="fa-solid fa-circle-check success-icon"></i>
+                    <h2 id="done-heading">Account active</h2>
+                    <p class="auth-sub" id="done-message"></p>
+                    <button type="button" class="btn-3d" id="go-to-login">Go to Log In</button>
+                </div>
+
+            </section>
+            </div>
         </div>
     </section>
 
+    <!-- About Section -->
     <section id="about" class="section reverse">
         <div class="content fade-right">
             <h2>About Us</h2>
@@ -61,17 +223,19 @@
         </div>
     </section>
 
+    <!-- Donate Section -->
     <section id="donate" class="section">
         <div class="content fade-left">
             <h2>Make a Donation</h2>
             <h3>Every meal counts</h3>
             <p>Whether you're a restaurant with end-of-day surplus, or someone hosting a large gathering, you can list your available food here. Sign up as a donor to get started - our network of NGOs is always on standby to pick up and distribute.</p>
-            <a href="auth.html" class="btn-3d">Sign Up to Donate</a>
+            <a href="#home" class="btn-3d">Sign Up to Donate</a>
         </div>
 
         <div class="image-container fade-right">
             <div class="contact-card-wrapper">
-                <form class="contact-form">
+                <p id="donate-alert" class="auth-alert hidden"></p>
+                <form class="contact-form" id="donate-form">
                     <div class="input-group">
                         <label for="donor-name">Name / Restaurant Name</label>
                         <input type="text" id="donor-name" name="donor_name" placeholder="e.g. Krabs and Chill" required>
@@ -93,6 +257,7 @@
         </div>
     </section>
 
+    <!-- Download App Section -->
     <section id="app" class="section reverse">
         <div class="content fade-right">
             <h2>Download Our App</h2>
@@ -112,6 +277,7 @@
         </div>
     </section>
 
+    <!-- Contact Section -->
     <section id="contact" class="section">
         <div class="content fade-left">
             <h2>Contact Us</h2>
@@ -120,17 +286,17 @@
 
             <ul class="contact-info">
                 <li data-copy="Ramrao Adik Institute of Technology" title="Click to copy">
-                    <i class="fa-solid fa-map-location"></i> 
+                    <i class="fa-solid fa-map-location"></i>
                     <span>Ramrao Adik Institute of Technology</span>
                     <span class="copy-badge">Copied!</span>
                 </li>
                 <li data-copy="support@serviso.org" title="Click to copy">
-                    <i class="fa-solid fa-envelope"></i> 
+                    <i class="fa-solid fa-envelope"></i>
                     <span>support@serviso.org</span>
                     <span class="copy-badge">Copied!</span>
                 </li>
                 <li data-copy="022277095747" title="Click to copy">
-                    <i class="fa-solid fa-phone"></i> 
+                    <i class="fa-solid fa-phone"></i>
                     <span>022277095747</span>
                     <span class="copy-badge">Copied!</span>
                 </li>
@@ -139,6 +305,7 @@
 
         <div class="image-container fade-right">
             <div class="contact-card-wrapper">
+                <!-- Formspree Contact Form Integration -->
                 <form action="https://formspree.io/f/mgawyarg" method="POST" class="contact-form">
                     <div class="input-group">
                         <label for="name">Your Name</label>
@@ -158,6 +325,7 @@
         </div>
     </section>
 
+    <!-- Footer -->
     <footer>
         <div class="social-icons">
             <a href="#" class="social-link" aria-label="Instagram">
@@ -173,5 +341,10 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Point this at your deployed Render backend URL before going live
+        window.SERVISO_API_BASE = 'https://your-render-service.onrender.com/api';
+    </script>
+    <script src="auth.js"></script>
 </body>
 </html>
