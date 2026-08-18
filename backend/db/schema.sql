@@ -1,26 +1,39 @@
 -- Serviso authentication schema
--- Run once against your PostgreSQL database (psql $DATABASE_URL -f db/schema.sql)
+-- This runs automatically on every Render deploy (via the build command),
+-- so every statement here is safe to run repeatedly without erroring out.
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
-CREATE TYPE user_role AS ENUM ('donor', 'receiver', 'admin');
+DO $$ BEGIN
+    CREATE TYPE user_role AS ENUM ('donor', 'receiver', 'admin');
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TYPE user_sub_role AS ENUM (
-    'civilian',                 -- donor: normal individual, no documents required
-    'restaurant_canteen',       -- donor: restaurant / govt canteen, license required
-    'ngo_head',                 -- receiver: heads a registered NGO, registration doc required
-    'social_worker_politician', -- receiver: individual, Aadhaar required
-    'admin'                     -- platform reviewer
-);
+DO $$ BEGIN
+    CREATE TYPE user_sub_role AS ENUM (
+        'civilian',                 -- donor: normal individual, no documents required
+        'restaurant_canteen',       -- donor: restaurant / govt canteen, license required
+        'ngo_head',                 -- receiver: heads a registered NGO, registration doc required
+        'social_worker_politician', -- receiver: individual, Aadhaar required
+        'admin'                     -- platform reviewer
+    );
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TYPE account_status AS ENUM (
-    'pending_email_verification', -- signed up, OTP not yet confirmed
-    'active',                      -- email verified, can log in immediately
-    'suspended',                   -- temporarily locked by admin (e.g. flagged document/Aadhaar)
-    'terminated'                   -- permanently locked by admin (confirmed false info)
-);
+DO $$ BEGIN
+    CREATE TYPE account_status AS ENUM (
+        'pending_email_verification', -- signed up, OTP not yet confirmed
+        'active',                      -- email verified, can log in immediately
+        'suspended',                   -- temporarily locked by admin (e.g. flagged document/Aadhaar)
+        'terminated'                   -- permanently locked by admin (confirmed false info)
+    );
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name              VARCHAR(150) NOT NULL,
     email             VARCHAR(255) NOT NULL UNIQUE,
@@ -39,9 +52,9 @@ CREATE TABLE users (
     updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE UNIQUE INDEX idx_users_aadhaar_hash ON users (aadhaar_hash) WHERE aadhaar_hash IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_aadhaar_hash ON users (aadhaar_hash) WHERE aadhaar_hash IS NOT NULL;
 
-CREATE TABLE documents (
+CREATE TABLE IF NOT EXISTS documents (
     id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id       UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     doc_type      VARCHAR(50) NOT NULL, -- 'ngo_registration' | 'aadhaar_card' | 'fssai_license' etc
@@ -51,7 +64,7 @@ CREATE TABLE documents (
     uploaded_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE TABLE otp_codes (
+CREATE TABLE IF NOT EXISTS otp_codes (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     code_hash   TEXT NOT NULL,
@@ -62,9 +75,9 @@ CREATE TABLE otp_codes (
     created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_otp_user_purpose ON otp_codes (user_id, purpose, consumed);
+CREATE INDEX IF NOT EXISTS idx_otp_user_purpose ON otp_codes (user_id, purpose, consumed);
 
-CREATE TABLE login_attempts (
+CREATE TABLE IF NOT EXISTS login_attempts (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email       VARCHAR(255) NOT NULL,
     ip_address  VARCHAR(64),
@@ -72,4 +85,16 @@ CREATE TABLE login_attempts (
     created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_login_attempts_email_time ON login_attempts (email, created_at);
+CREATE INDEX IF NOT EXISTS idx_login_attempts_email_time ON login_attempts (email, created_at);
+
+CREATE TABLE IF NOT EXISTS food_listings (
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    donor_id      UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    food_quantity VARCHAR(255) NOT NULL,
+    address       TEXT NOT NULL,
+    status        VARCHAR(20) NOT NULL DEFAULT 'available', -- 'available' | 'claimed' | 'completed'
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_food_listings_donor ON food_listings (donor_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_food_listings_status ON food_listings (status, created_at);
