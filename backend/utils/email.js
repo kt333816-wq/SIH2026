@@ -1,32 +1,38 @@
-const { Resend } = require('resend');
+const brevo = require('@getbrevo/brevo');
 
-// Initialize Resend client using environment variable
-const resend = new Resend(process.env.RESEND_API_KEY || process.env.SMTP_PASS);
+// Initialize the Brevo API client
+const apiInstance = new brevo.TransactionalEmailsApi();
+apiInstance.setApiKey(
+    brevo.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.BREVO_API_KEY
+);
 
 async function sendOtpEmail(toEmail, name, code) {
-    const fromAddress = process.env.EMAIL_FROM || 'Serviso ';
+    const sendSmtpEmail = new brevo.SendSmtpEmail();
 
-    const { data, error } = await resend.emails.send({
-        from: fromAddress,
-        to: [toEmail],
-        subject: `Your Serviso verification code: ${code}`,
-        html: `
-            
-                Serviso
-                Hi ${name},
-                Your verification code is:
-                ${code}
-                This code expires in ${process.env.OTP_EXPIRY_MINUTES || 10} minutes. If you didn't request this, you can safely ignore this email.
-            
-        `
-    });
+    sendSmtpEmail.subject = `Your Serviso verification code: ${code}`;
+    sendSmtpEmail.sender = { 
+        name: 'Serviso', 
+        email: process.env.EMAIL_FROM || 'kt333816@gmail.com' 
+    };
+    sendSmtpEmail.to = [{ email: toEmail, name: name }];
+    sendSmtpEmail.htmlContent = `
+        <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+            <h2 style="color:#e67e22; margin-top:0;">Serviso</h2>
+            <p>Hi ${name},</p>
+            <p>Your verification code is:</p>
+            <p style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color:#492f23; background:#f9f9f9; padding: 10px; text-align: center; border-radius: 4px;">${code}</p>
+            <p>This code expires in ${process.env.OTP_EXPIRY_MINUTES || 10} minutes. If you didn't request this, you can safely ignore this email.</p>
+        </div>
+    `;
 
-    if (error) {
-        console.error('Resend API execution error:', error);
-        throw new Error(error.message || 'Failed to send verification email');
+    try {
+        const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        return data;
+    } catch (error) {
+        console.error('Brevo execution error:', error.response?.body || error.message);
+        throw new Error('Failed to send verification email');
     }
-
-    return data;
 }
 
 const STATUS_COPY = {
@@ -47,13 +53,21 @@ const STATUS_COPY = {
 async function sendAccountStatusEmail(toEmail, name, status, reason) {
     const copy = STATUS_COPY[status];
     if (!copy) return;
-    
-    await resend.emails.send({
-        from: process.env.EMAIL_FROM || 'Serviso ',
-        to: [toEmail],
-        subject: copy.subject,
-        text: copy.text(name, reason)
-    });
+
+    const sendSmtpEmail = new brevo.SendSmtpEmail();
+    sendSmtpEmail.subject = copy.subject;
+    sendSmtpEmail.sender = { 
+        name: 'Serviso', 
+        email: process.env.EMAIL_FROM || 'kt333816@gmail.com' 
+    };
+    sendSmtpEmail.to = [{ email: toEmail, name: name }];
+    sendSmtpEmail.textContent = copy.text(name, reason);
+
+    try {
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
+    } catch (error) {
+        console.error('Brevo execution error:', error.response?.body || error.message);
+    }
 }
 
 module.exports = { sendOtpEmail, sendAccountStatusEmail };
