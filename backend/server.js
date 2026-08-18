@@ -8,6 +8,9 @@ const adminRoutes = require('./routes/admin');
 
 const app = express();
 
+// Trust reverse proxies (required for hosted environments like Render)
+app.set('trust proxy', 1);
+
 app.use(helmet());
 app.use(cors({
     origin: process.env.FRONTEND_URL,
