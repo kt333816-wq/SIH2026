@@ -1,6 +1,6 @@
 const { Resend } = require('resend');
 
-// Uses RESEND_API_KEY or falls back to SMTP_PASS if that's where you stored it on Render
+// Initialize Resend client using environment variable
 const resend = new Resend(process.env.RESEND_API_KEY || process.env.SMTP_PASS);
 
 async function sendOtpEmail(toEmail, name, code) {
@@ -22,7 +22,7 @@ async function sendOtpEmail(toEmail, name, code) {
     });
 
     if (error) {
-        console.error('Resend execution error:', error);
+        console.error('Resend API execution error:', error);
         throw new Error(error.message || 'Failed to send verification email');
     }
 
