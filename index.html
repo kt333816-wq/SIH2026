@@ -56,8 +56,12 @@
                 <i class="fa-solid fa-circle-user success-icon"></i>
                 <h2>Welcome back, <span id="logged-in-name"></span></h2>
                 <p class="auth-sub" id="logged-in-role-label"></p>
-                <a href="#donate" class="btn-3d" id="logged-in-donate-link" style="display:none;">List Food Availability</a>
-                <button type="button" class="btn-3d btn-secondary" id="logout-btn">Log Out</button>
+                
+                <div class="app-buttons" style="margin-top: 20px; gap: 10px; flex-direction: column; width: 100%;">
+                    <a href="#donate" class="btn-3d" id="logged-in-donate-link" style="display:none; text-align: center;">List Food Availability</a>
+                    <button type="button" class="btn-3d btn-secondary" id="btn-receiver-portal">Receiver Interface</button>
+                    <button type="button" class="btn-3d btn-secondary" id="logout-btn">Log Out</button>
+                </div>
             </div>
 
             <div id="auth-forms-wrapper">
@@ -209,6 +213,34 @@
             </div>
         </div>
     </section>
+
+    <!-- Modal Popup for Receiver Profile Setup -->
+    <div id="receiver-modal" class="auth-card" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; width: 90%; max-width: 480px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <h2>Receiver Interface</h2>
+        <p class="auth-sub" style="margin-bottom: 15px;">Set your details to match with nearby donors.</p>
+        
+        <form id="receiver-form">
+            <div class="input-group">
+                <label for="receiver-address">Full Address</label>
+                <input type="text" id="receiver-address" placeholder="Enter street address & locality" required />
+            </div>
+
+            <div class="input-group">
+                <label for="receiver-feed-pref">Feed Type Preference</label>
+                <select id="receiver-feed-pref" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.2); outline: none;">
+                    <option value="human" style="color: #000;">Human Feed</option>
+                    <option value="animal" style="color: #000;">Animal Feed</option>
+                    <option value="both" style="color: #000;">Both (Human & Animal)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-3d" style="margin-top: 15px;">Save & Find Donors</button>
+            <button type="button" id="btn-close-modal" class="btn-3d btn-secondary" style="margin-top: 8px;">Cancel</button>
+        </form>
+    </div>
+
+    <!-- Background Modal Backdrop -->
+    <div id="modal-backdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 1999;"></div>
 
     <!-- About Section -->
     <section id="about" class="section reverse">

@@ -98,3 +98,26 @@ CREATE TABLE IF NOT EXISTS food_listings (
 
 CREATE INDEX IF NOT EXISTS idx_food_listings_donor ON food_listings (donor_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_food_listings_status ON food_listings (status, created_at);
+-- Enable cube & earthdistance extensions for distance math (in meters)
+CREATE EXTENSION IF NOT EXISTS cube;
+CREATE EXTENSION IF NOT EXISTS earthdistance;
+
+-- Table to store receiver preferences and location coordinates
+CREATE TABLE IF NOT EXISTS receiver_profiles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+    full_address TEXT NOT NULL,
+    feed_preference VARCHAR(20) NOT NULL DEFAULT 'human', -- 'human' | 'animal' | 'both'
+    latitude NUMERIC(10, 8) NOT NULL,
+    longitude NUMERIC(11, 8) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Add feed_type, expiration timer, coordinates, and match tracking to food_listings
+ALTER TABLE food_listings 
+    ADD COLUMN IF NOT EXISTS feed_type VARCHAR(20) NOT NULL DEFAULT 'human', -- 'human' | 'animal'
+    ADD COLUMN IF NOT EXISTS latitude NUMERIC(10, 8),
+    ADD COLUMN IF NOT EXISTS longitude NUMERIC(11, 8),
+    ADD COLUMN IF NOT EXISTS matched_receiver_id UUID REFERENCES users(id),
+    ADD COLUMN IF NOT EXISTS expires_for_human_at TIMESTAMPTZ DEFAULT (now() + INTERVAL '2 hours');
