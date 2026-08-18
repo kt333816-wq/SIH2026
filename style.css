@@ -1,12 +1,11 @@
 :root {
-    --bg-primary: #492f23; 
-    --bg-secondary: #fdf5e6; 
+    --bg-primary: #492f23;
+    --bg-secondary: #fdf5e6;
     --text-light: #ffffff;
     --text-dark: #333333;
     --accent: #e67e22;
     --accent-dark: #d35400;
 }
-
 
 * {
     margin: 0;
@@ -14,9 +13,10 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     max-width: 100%;
-    overflow-x: hidden; 
+    overflow-x: hidden;
     position: relative;
 }
 
@@ -30,8 +30,11 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-h1, h2, h3, .logo a {
-    font-family: "Lilita One", sans-serif; 
+h1,
+h2,
+h3,
+.logo a {
+    font-family: "Lilita One", sans-serif;
     font-weight: normal;
     letter-spacing: 1px;
 }
@@ -72,7 +75,6 @@ header {
     position: relative;
     padding-bottom: 5px;
     transition: color 0.3s;
-    white-space: nowrap; /* never let a nav label wrap mid-word */
 }
 
 .navbar a:hover {
@@ -104,7 +106,6 @@ header {
     min-height: 100vh;
     padding: 100px 5%;
     gap: 50px;
-    scroll-margin-top: 90px; /* keeps section content clear of the fixed header when jumped to via #anchor links */
 }
 
 .section.reverse {
@@ -125,12 +126,32 @@ header {
     align-items: center;
 }
 
+h1 {
+    font-size: 80px;
+    margin-bottom: 10px;
+    color: var(--accent);
+}
 
-h1 { font-size: 80px; margin-bottom: 10px; color: var(--accent); }
-h2 { font-size: 50px; margin-bottom: 10px; }
-.reverse h2 { color: var(--bg-primary); }
-h3 { font-size: 28px; margin-bottom: 20px; opacity: 0.9; }
-p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
+h2 {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.reverse h2 {
+    color: var(--bg-primary);
+}
+
+h3 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+p {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
 
 /* 3D Button */
 .btn-3d {
@@ -162,9 +183,11 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     background-color: var(--bg-primary);
     box-shadow: 0 8px 0 #2a1b14, 0 15px 20px rgba(0,0,0,0.2);
 }
+
 .btn-secondary:hover {
     box-shadow: 0 5px 0 #2a1b14, 0 10px 15px rgba(0,0,0,0.2);
 }
+
 .btn-secondary:active {
     box-shadow: 0 0 0 #2a1b14, 0 2px 5px rgba(0,0,0,0.2);
 }
@@ -175,13 +198,12 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     gap: 20px;
 }
 
-
 .app-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 12px; 
-    font-size: 18px; 
+    gap: 12px;
+    font-size: 18px;
     padding: 12px 28px;
 }
 
@@ -191,7 +213,7 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
 }
 
 .app-btn:hover i {
-    transform: scale(1.25) rotate(-8deg); 
+    transform: scale(1.25) rotate(-8deg);
 }
 
 #store-icon {
@@ -234,9 +256,8 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     max-width: 450px;
 }
 
-
 #contact.section {
-    gap: 80px; 
+    gap: 80px;
 }
 
 /* Form Container Card */
@@ -249,7 +270,6 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
-
 
 .contact-card-wrapper:hover {
     transform: translateY(-10px) rotate(-1deg);
@@ -278,7 +298,7 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     padding-left: 5px;
 }
 
-.contact-form input, 
+.contact-form input,
 .contact-form textarea {
     padding: 18px;
     background-color: rgba(255, 255, 255, 0.05); /* Slight tint of the background */
@@ -291,17 +311,16 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
 }
 
 /* Placeholder */
-.contact-form input::placeholder, 
+.contact-form input::placeholder,
 .contact-form textarea::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-
-.contact-form input:focus, 
+.contact-form input:focus,
 .contact-form textarea:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2),
                 0 0 15px rgba(230, 126, 34, 0.3);
     background-color: rgba(255, 255, 255, 0.08);
 }
@@ -312,7 +331,8 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     margin-top: 10px;
 }
 
-input, textarea {
+input,
+textarea {
     padding: 15px;
     border-radius: 8px;
     border: none;
@@ -321,7 +341,8 @@ input, textarea {
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
     outline: 3px solid var(--accent);
 }
 
@@ -356,7 +377,6 @@ footer p {
     justify-content: center;
 }
 
-
 .social-link {
     display: inline-flex;
     align-items: center;
@@ -372,22 +392,19 @@ footer p {
     transition: all 0.2s ease-in-out;
 }
 
-
 .social-link i {
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-
 .social-link:hover {
     transform: translateY(-5px);
-    color: var(--accent); 
+    color: var(--accent);
     box-shadow: 0 8px 0 #1b110c, 0 15px 20px rgba(0,0,0,0.4);
 }
 
 .social-link:hover i {
     transform: scale(1.2) rotate(10deg); /* Playful tilt */
 }
-
 
 .social-link:active {
     transform: translateY(4px);
@@ -398,7 +415,7 @@ footer p {
 .hamburger {
     display: none;
     cursor: pointer;
-    z-index: 1001; 
+    z-index: 1001;
 }
 
 .hamburger .bar {
@@ -424,12 +441,10 @@ footer p {
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
-
 .visible {
     opacity: 1;
     transform: translateX(0);
 }
-
 
 /* Click to Copy*/
 .contact-info {
@@ -481,7 +496,6 @@ footer p {
     box-shadow: 0 2px 0 #2a1b14, 0 4px 5px rgba(0, 0, 0, 0.2);
 }
 
-
 .copy-badge {
     position: absolute;
     right: 15px;
@@ -498,19 +512,13 @@ footer p {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-
 .contact-info li.copied .copy-badge {
     opacity: 1;
     transform: translateY(0) scale(1);
 }
 
-
 /* Responsive Media Queries */
-/* Breakpoint raised from 900px to 1100px: at in-between widths the navbar
-   was running out of horizontal room and wrapping individual words
-   ("About" / "Us" on separate lines) instead of switching to the mobile
-   hamburger menu early enough to avoid it. */
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
 
     .hamburger {
         display: block;
@@ -520,19 +528,18 @@ footer p {
     .navbar {
         position: fixed;
         top: 0;
-        right: -100%; 
+        right: -100%;
         width: 100%;
         height: 100vh;
-        background-color: rgba(42, 27, 20, 0.98); 
+        background-color: rgba(42, 27, 20, 0.98);
         backdrop-filter: blur(15px);
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: right 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0); 
+        transition: right 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
         z-index: 1000;
     }
 
-   
     .navbar.active {
         right: 0;
     }
@@ -544,7 +551,7 @@ footer p {
     }
 
     .navbar a {
-        font-size: 28px; 
+        font-size: 28px;
     }
 
     /*Hamburger Animation*/
@@ -555,7 +562,7 @@ footer p {
 
     .hamburger.active .bar:nth-child(2) {
         opacity: 0;
-        transform: translateX(20px); 
+        transform: translateX(20px);
     }
 
     .hamburger.active .bar:nth-child(3) {
@@ -563,31 +570,37 @@ footer p {
         background-color: var(--accent);
     }
 
-    .section, .section.reverse {
+    .section,
+    .section.reverse {
         flex-direction: column;
         text-align: center;
         padding-top: 120px;
     }
 
-    h1 { font-size: 60px; }
-    h2 { font-size: 40px; }
+    h1 {
+        font-size: 60px;
+    }
+
+    h2 {
+        font-size: 40px;
+    }
 
     .img-3d {
         box-shadow: 0 15px 0px var(--accent) !important;
         margin-top: 30px;
     }
-    
+
     .app-buttons {
         justify-content: center;
     }
 
     /* Contact Form */
     .contact-card-wrapper {
-        padding: 25px; 
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         margin-top: 20px;
     }
-    
+
     #contact.section {
         gap: 40px;
     }
