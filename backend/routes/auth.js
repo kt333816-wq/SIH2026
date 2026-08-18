@@ -25,8 +25,9 @@ const VALID_COMBINATIONS = {
     receiver: ['ngo_head', 'social_worker_politician']
 };
 
-const otpLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: { error: 'Too many attempts, try again later' } });
-const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Too many login attempts, try again later' } });
+const signupLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, message: { error: 'Too many signup attempts, try again in a few minutes' } });
+const otpLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 8, message: { error: 'Too many attempts, try again later' } });
+const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 15, message: { error: 'Too many login attempts, try again later' } });
 
 function signToken(user) {
     return jwt.sign(
@@ -42,7 +43,7 @@ function signToken(user) {
 //                       aadhaar_number (if social_worker_politician), document (file, if required),
 //                       turnstileToken
 // ---------------------------------------------------------------------------
-router.post('/signup', otpLimiter, upload.single('document'), async (req, res) => {
+router.post('/signup', signupLimiter, upload.single('document'), async (req, res) => {
     const client = await pool.connect();
     try {
         const { name, email, mobile, password, role, sub_role, aadhaar_number, turnstileToken } = req.body;
