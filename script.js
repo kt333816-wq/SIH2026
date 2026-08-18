@@ -1,6 +1,4 @@
-// Dont touch this I have no Idea how this works
 document.addEventListener("DOMContentLoaded", function () {
-   // 1. Scroll Animations (Intersection Observer)
     const animatedElements = document.querySelectorAll('.fade-left, .fade-right');
     const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
@@ -12,10 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }, {
         threshold: 0.2
     });
+
     animatedElements.forEach(element => {
         observer.observe(element);
     });
-    // 2. Click to Copy Functionality
+
     const copyItems = document.querySelectorAll('.contact-info li');
     copyItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -32,7 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // 3. Hamburger Menu Logic
     const hamburger = document.querySelector(".hamburger");
     const navbar = document.querySelector(".navbar");
     const navLinks = document.querySelectorAll(".navbar a");
@@ -48,4 +46,15 @@ document.addEventListener("DOMContentLoaded", function () {
             navbar.classList.remove("active");
         });
     });
+});
+
+window.addEventListener("load", () => {
+    if (window.location.hash) {
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+            setTimeout(() => {
+                target.scrollIntoView({ behavior: "auto", block: "start" });
+            }, 400);
+        }
+    }
 });
