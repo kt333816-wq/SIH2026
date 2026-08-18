@@ -1,72 +1,108 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const receiverBtn = document.getElementById('btn-receiver-portal');
-    const receiverModal = document.getElementById('receiver-modal');
-    const closeModalBtn = document.getElementById('btn-close-modal');
-    const receiverForm = document.getElementById('receiver-form');
+// Dont touch this I have no Idea how this works
 
-    // Currently logged-in user ID (Retrieved from session/localStorage)
-    const currentUserId = localStorage.getItem('userId');
 
-    // 1. Toggle Receiver Modal
-    if (receiverBtn) {
-        receiverBtn.addEventListener('click', () => {
-            receiverModal.style.display = 'block';
-        });
-    }
 
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', () => {
-            receiverModal.style.display = 'none';
-        });
-    }
+document.addEventListener("DOMContentLoaded", function () {
 
-    // 2. Submit Receiver Info with Geolocation
-    if (receiverForm) {
-        receiverForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+    // 1. Scroll Animations (Intersection Observer)
 
-            const fullAddress = document.getElementById('receiver-address').value;
-            const feedPreference = document.getElementById('receiver-feed-pref').value;
+    const animatedElements = document.querySelectorAll('.fade-left, .fade-right');
 
-            if (!navigator.geolocation) {
-                alert('Geolocation is not supported by your browser.');
-                return;
+    const observer = new IntersectionObserver((entries, observer) => {
+
+        entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+
+                entry.target.classList.add('visible');
+
+                observer.unobserve(entry.target);
+
             }
 
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-
-                    try {
-                        const res = await fetch('/api/food/receiver/profile', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                userId: currentUserId,
-                                fullAddress: fullAddress,
-                                feedPreference: feedPreference,
-                                latitude: latitude,
-                                longitude: longitude
-                            })
-                        });
-
-                        const data = await res.json();
-                        if (data.success) {
-                            alert('Location and preferences saved! Searching for nearby donors...');
-                            receiverModal.style.display = 'none';
-                        } else {
-                            alert('Error: ' + data.error);
-                        }
-                    } catch (err) {
-                        console.error(err);
-                        alert('Failed to connect to backend.');
-                    }
-                },
-                (error) => {
-                    alert('Location access is required to compute distance to nearby donors.');
-                }
-            );
         });
-    }
+
+    }, {
+
+        threshold: 0.2
+
+    });
+
+
+
+    animatedElements.forEach(element => {
+
+        observer.observe(element);
+
+    });
+
+
+
+    // 2. Click to Copy Functionality
+
+    const copyItems = document.querySelectorAll('.contact-info li');
+
+    copyItems.forEach(item => {
+
+        item.addEventListener('click', () => {
+
+            const textToCopy = item.getAttribute('data-copy');
+
+
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+
+                item.classList.add('copied');
+
+                setTimeout(() => {
+
+                    item.classList.remove('copied');
+
+                }, 1800);
+
+            }).catch(err => {
+
+                console.error('Failed to copy text: ', err);
+
+            });
+
+        });
+
+    });
+
+
+
+    // 3. Hamburger Menu Logic
+
+    const hamburger = document.querySelector(".hamburger");
+
+    const navbar = document.querySelector(".navbar");
+
+    const navLinks = document.querySelectorAll(".navbar a");
+
+
+
+    hamburger.addEventListener("click", () => {
+
+        hamburger.classList.toggle("active");
+
+        navbar.classList.toggle("active");
+
+    });
+
+
+
+    navLinks.forEach(link => {
+
+        link.addEventListener("click", () => {
+
+            hamburger.classList.remove("active");
+
+            navbar.classList.remove("active");
+
+        });
+
+    });
+
 });
+
