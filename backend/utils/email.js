@@ -1,31 +1,32 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: process.env.SMTP_PORT === '465',
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-    }
-});
+// Uses RESEND_API_KEY or falls back to SMTP_PASS if that's where you stored it on Render
+const resend = new Resend(process.env.RESEND_API_KEY || process.env.SMTP_PASS);
 
 async function sendOtpEmail(toEmail, name, code) {
-    await transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to: toEmail,
+    const fromAddress = process.env.EMAIL_FROM || 'Serviso ';
+
+    const { data, error } = await resend.emails.send({
+        from: fromAddress,
+        to: [toEmail],
         subject: `Your Serviso verification code: ${code}`,
-        text: `Hi ${name},\n\nYour Serviso verification code is ${code}. It expires in ${process.env.OTP_EXPIRY_MINUTES || 10} minutes.\n\nIf you didn't request this, ignore this email.`,
         html: `
-            <div style="font-family: sans-serif; max-width: 480px; margin: auto;">
-                <h2 style="color:#e67e22;">Serviso</h2>
-                <p>Hi ${name},</p>
-                <p>Your verification code is:</p>
-                <p style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color:#492f23;">${code}</p>
-                <p>This code expires in ${process.env.OTP_EXPIRY_MINUTES || 10} minutes. If you didn't request this, you can safely ignore this email.</p>
-            </div>
+            
+                Serviso
+                Hi ${name},
+                Your verification code is:
+                ${code}
+                This code expires in ${process.env.OTP_EXPIRY_MINUTES || 10} minutes. If you didn't request this, you can safely ignore this email.
+            
         `
     });
+
+    if (error) {
+        console.error('Resend execution error:', error);
+        throw new Error(error.message || 'Failed to send verification email');
+    }
+
+    return data;
 }
 
 const STATUS_COPY = {
@@ -46,9 +47,10 @@ const STATUS_COPY = {
 async function sendAccountStatusEmail(toEmail, name, status, reason) {
     const copy = STATUS_COPY[status];
     if (!copy) return;
-    await transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to: toEmail,
+    
+    await resend.emails.send({
+        from: process.env.EMAIL_FROM || 'Serviso ',
+        to: [toEmail],
         subject: copy.subject,
         text: copy.text(name, reason)
     });
