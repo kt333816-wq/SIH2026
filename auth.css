@@ -21,12 +21,13 @@
 
 /* Tabs */
 .auth-tabs {
+    position: relative;
     display: flex;
-    gap: 10px;
     margin-bottom: 30px;
     background: rgba(255,255,255,0.05);
     border-radius: 14px;
     padding: 6px;
+    z-index: 1;
 }
 
 .auth-tab {
@@ -34,24 +35,43 @@
     padding: 12px;
     border: none;
     border-radius: 10px;
-    background: transparent;
+    background: transparent !important;
     color: var(--text-light);
     font-family: 'Lilita One', sans-serif;
     font-size: 16px;
     letter-spacing: 1px;
     cursor: pointer;
-    opacity: 0.6;
-    transition: all 0.25s ease;
+    opacity: 0.5;
+    transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-tabs::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    bottom: 6px;
+    width: calc(50% - 6px);
+    background-color: var(--accent);
+    border-radius: 10px;
+    z-index: -1;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-tabs:has(.auth-tab[data-tab="signup"].active)::before {
+    transform: translateX(100%);
 }
 
 .auth-tab.active {
-    background-color: var(--accent);
     opacity: 1;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .auth-panel { display: none; }
-.auth-panel.active { display: block; }
+.auth-panel.active { 
+    display: block; 
+    animation: smoothFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
 .auth-sub {
     font-size: 15px;
@@ -97,7 +117,7 @@ h2 { margin-bottom: 6px; }
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    transition: all 0.25s ease;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .category-card:hover {
@@ -115,13 +135,11 @@ h2 { margin-bottom: 6px; }
 .category-card .role-desc { font-size: 13px; opacity: 0.75; }
 
 /* Role selection grid (within a category) */
-.role-grid {
-    display: none;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+.role-grid { display: none; }
+.role-grid.visible { 
+    display: grid; 
+    animation: smoothFadeSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-
-.role-grid.visible { display: grid; }
 
 .role-card {
     background: rgba(255,255,255,0.05);
@@ -134,7 +152,7 @@ h2 { margin-bottom: 6px; }
     display: flex;
     flex-direction: column;
     gap: 8px;
-    transition: all 0.25s ease;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .role-card:hover {
@@ -161,7 +179,10 @@ h2 { margin-bottom: 6px; }
 
 /* Signup step visibility */
 .signup-step { display: none; }
-.signup-step.active { display: block; }
+.signup-step.active { 
+    display: block; 
+    animation: smoothFadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
 .back-link {
     background: none;
@@ -177,7 +198,10 @@ h2 { margin-bottom: 6px; }
 }
 
 .conditional-field { display: none; }
-.conditional-field.visible { display: flex; }
+.conditional-field.visible { 
+    display: flex; 
+    animation: smoothFadeSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
 .field-hint {
     font-size: 12px;
@@ -230,6 +254,23 @@ form#login-form, form#signup-form {
     display: flex;
     justify-content: center;
     margin: 5px 0;
+}
+
+
+@keyframes smoothFadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes smoothFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @media (max-width: 600px) {
