@@ -57,6 +57,7 @@
                 <h2>Welcome back, <span id="logged-in-name"></span></h2>
                 <p class="auth-sub" id="logged-in-role-label"></p>
                 <a href="#donate" class="btn-3d" id="logged-in-donate-link" style="display:none;">List Food Availability</a>
+                <a href="#receive" class="btn-3d" id="logged-in-receiver-link" style="display:none;">Find Food to Receive</a>
                 <button type="button" class="btn-3d btn-secondary" id="logout-btn">Log Out</button>
             </div>
 
@@ -252,6 +253,38 @@
                     </div>
 
                     <button type="submit" class="btn-3d">List Food Availability</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Receive Section: receiver profile setup, shown to logged-in receivers -->
+    <section id="receive" class="section reverse">
+        <div class="content fade-right">
+            <h2>Receive Donations</h2>
+            <h3>Tell us where and what you can take</h3>
+            <p>Set your address and feed preference once - we'll match you with the nearest available donation automatically. You can update this any time.</p>
+        </div>
+
+        <div class="image-container fade-left">
+            <div class="contact-card-wrapper">
+                <p id="receiver-alert" class="auth-alert hidden"></p>
+                <form class="contact-form" id="receiver-form">
+                    <div class="input-group">
+                        <label for="receiver-address">Full Address</label>
+                        <textarea id="receiver-address" name="full_address" placeholder="e.g. Shanti Nagar Community Hall, Chandnagar" required></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="receiver-feed-pref">Feed Preference</label>
+                        <select id="receiver-feed-pref" name="feed_preference" required>
+                            <option value="human">Human feed</option>
+                            <option value="animal">Animal feed</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-3d">Save & Find Donations</button>
                 </form>
             </div>
         </div>
