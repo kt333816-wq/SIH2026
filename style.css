@@ -279,7 +279,8 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
 }
 
 .contact-form input, 
-.contact-form textarea {
+.contact-form textarea,
+.contact-form select {
     padding: 18px;
     background-color: rgba(255, 255, 255, 0.05);
     color: var(--text-light);
@@ -290,6 +291,11 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     transition: all 0.3s ease;
 }
 
+.contact-form select {
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+}
+
 .contact-form input::placeholder, 
 .contact-form textarea::placeholder {
     color: rgba(255, 255, 255, 0.5);
@@ -297,7 +303,8 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
 
 
 .contact-form input:focus, 
-.contact-form textarea:focus {
+.contact-form textarea:focus,
+.contact-form select:focus {
     outline: none;
     border-color: var(--accent);
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 
@@ -310,6 +317,7 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     margin-top: 10px;
 }
 
+/* Base input/textarea reset (fields outside .contact-form, e.g. plain forms) */
 input, textarea {
     padding: 15px;
     border-radius: 8px;
@@ -319,14 +327,13 @@ input, textarea {
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
 }
 
-input:focus, textarea:focus {
-    outline: 3px solid var(--accent);
-}
-
 .contact-info {
     list-style: none;
-    font-size: 18px;
-    line-height: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 0;
 }
 
 /* Footer */
@@ -423,16 +430,6 @@ footer p {
 .visible {
     opacity: 1;
     transform: translateX(0);
-}
-
-
-.contact-info {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-    padding: 0;
 }
 
 .contact-info li {
