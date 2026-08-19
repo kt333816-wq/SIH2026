@@ -273,6 +273,30 @@ form#login-form, form#signup-form {
     to { opacity: 1; }
 }
 
+
+/* Looping Pulse Animation for OTP Action Button */
+#otp-form button[type="submit"] {
+    position: relative;
+    animation: otpPulseGlow 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes otpPulseGlow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 18px 6px rgba(230, 126, 34, 0.4);
+        transform: scale(1.015);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(230, 126, 34, 0);
+        transform: scale(1);
+    }
+}
+
+
+
 @media (max-width: 600px) {
     .role-grid, .category-grid { grid-template-columns: 1fr; }
     .auth-card { padding: 28px 22px; }
