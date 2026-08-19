@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     safeInit('initLoginForm', initLoginForm);
     safeInit('initSessionState', initSessionState);
     safeInit('initDonateForm', initDonateForm);
+    safeInit('initReceiverForm', initReceiverForm);
 
     safeInit('backToCategory', () => {
         document.getElementById('back-to-category').addEventListener('click', () => showSignupStep('category'));
@@ -100,6 +101,9 @@ function initSessionState() {
 
     const donateLink = document.getElementById('logged-in-donate-link');
     if (user.role === 'donor') donateLink.style.display = 'inline-block';
+
+    const receiverLink = document.getElementById('logged-in-receiver-link');
+    if (user.role === 'receiver') receiverLink.style.display = 'inline-block';
 
     document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.removeItem('serviso_token');
@@ -165,6 +169,71 @@ function initDonateForm() {
             form.reset();
         } catch (err) {
             showDonateAlert('Could not reach the server. Please try again.');
+        }
+    });
+}
+
+// ---------------------------------------------------------------------------
+// Receiver form: save/update the receiver's address + feed preference.
+// Only a logged-in receiver can submit this; same gate pattern as donate form.
+// ---------------------------------------------------------------------------
+function initReceiverForm() {
+    const form = document.getElementById('receiver-form');
+    if (!form) return;
+    form.dataset.servisoBound = 'true';
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const alertEl = document.getElementById('receiver-alert');
+        const showReceiverAlert = (msg, isError = true) => {
+            alertEl.textContent = msg;
+            alertEl.classList.remove('hidden');
+            alertEl.classList.toggle('error', isError);
+        };
+
+        const user = getStoredUser();
+        const token = localStorage.getItem('serviso_token');
+
+        if (!user || !token) {
+            showReceiverAlert("You'll need to log in or sign up before setting up your receiver profile - taking you there now.");
+            window.location.hash = '#home';
+            document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        if (user.role !== 'receiver') {
+            showReceiverAlert('Only receiver accounts (NGO / social worker) can set up a receiver profile.');
+            return;
+        }
+
+        const fullAddress = document.getElementById('receiver-address').value.trim();
+        const feedPreference = document.getElementById('receiver-feed-pref').value;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+
+        try {
+            const res = await fetch(`${API_BASE}/receiver/profile`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ full_address: fullAddress, feed_preference: feedPreference })
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                showReceiverAlert(data.error || 'Could not save your profile');
+                return;
+            }
+
+            showReceiverAlert('Profile saved - we\'ll match you with nearby donations.', false);
+        } catch (err) {
+            showReceiverAlert('Could not reach the server. Please try again.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save & Find Donations';
         }
     });
 }
