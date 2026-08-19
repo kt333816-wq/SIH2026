@@ -21,10 +21,11 @@ router.post('/', async (req, res) => {
     if (!food_quantity || !food_quantity.trim()) return res.status(400).json({ error: 'Food quantity is required' });
     if (!address || !address.trim()) return res.status(400).json({ error: 'Address is required' });
 
-    let coords;
+        let coords;
     try {
         coords = await geocodeAddress(address);
     } catch (err) {
+        console.error('Geocoding failed for address:', address, '-', err.message);
         return res.status(400).json({ error: 'Could not locate that address - please check it and try again' });
     }
 
