@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Serviso - Donate food with love</title>
-
+ 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+ 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="auth.css">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
-
+ 
     <!-- Header and Navbar -->
     <header id="header">
         <div class="logo">
             <a href="#home">Serviso.</a>
         </div>
-
+ 
         <!-- Hamburger Icon -->
         <div class="hamburger">
             <span class="bar"></span>
             <span class="bar"></span>
             <span class="bar"></span>
         </div>
-
+ 
         <nav class="navbar">
             <ul>
                 <li><a href="#home">Home</a></li>
@@ -39,18 +39,18 @@
             </ul>
         </nav>
     </header>
-
+ 
     <!-- Home Section: full-page login/signup interface -->
     <section id="home" class="section home-auth-section">
-
+ 
         <div class="home-intro fade-left">
             <h1>Serviso</h1>
             <h3>Always present to serve the society</h3>
             <p>We redistribute excess food to the right people in need. Log in or create an account below to get started.</p>
         </div>
-
+ 
         <div class="auth-card hero-auth-card fade-right" id="auth-card-root">
-
+ 
             <!-- Shown only when a valid session exists - replaces the tabs/forms below -->
             <div id="logged-in-panel" class="signup-step" style="display:none;">
                 <i class="fa-solid fa-circle-user success-icon"></i>
@@ -60,21 +60,21 @@
                 <a href="#receive" class="btn-3d" id="logged-in-receiver-link" style="display:none;">Find Food to Receive</a>
                 <button type="button" class="btn-3d btn-secondary" id="logout-btn">Log Out</button>
             </div>
-
+ 
             <div id="auth-forms-wrapper">
-
+ 
             <div class="auth-tabs">
                 <button class="auth-tab active" data-tab="login">Log In</button>
                 <button class="auth-tab" data-tab="signup">Sign Up</button>
             </div>
-
+ 
             <p id="auth-alert" class="auth-alert hidden"></p>
-
+ 
             <!-- ============ LOGIN ============ -->
             <section id="panel-login" class="auth-panel active">
                 <h2>Welcome back</h2>
                 <p class="auth-sub">Log in to your Serviso account</p>
-
+ 
                 <form id="login-form">
                     <div class="input-group">
                         <label for="login-email">Email</label>
@@ -84,20 +84,20 @@
                         <label for="login-password">Password</label>
                         <input type="password" id="login-password" required placeholder="••••••••">
                     </div>
-
+ 
                     <div class="cf-turnstile" data-sitekey="0x4AAAAAAER9c82U5CfcjtZL" data-callback="onLoginTurnstile"></div>
-
+ 
                     <button type="submit" class="btn-3d">Log In</button>
                 </form>
             </section>
-
+ 
             <!-- ============ SIGNUP ============ -->
             <section id="panel-signup" class="auth-panel">
-
+ 
                 <div id="signup-step-category" class="signup-step active">
                     <h2>Join Serviso</h2>
                     <p class="auth-sub">Are you giving food away, or receiving it for distribution?</p>
-
+ 
                     <div class="category-grid">
                         <button type="button" class="category-card" data-category="donor">
                             <i class="fa-solid fa-hand-holding-heart"></i>
@@ -111,12 +111,12 @@
                         </button>
                     </div>
                 </div>
-
+ 
                 <div id="signup-step-role" class="signup-step">
                     <button type="button" class="back-link" id="back-to-category"><i class="fa-solid fa-arrow-left"></i> Back</button>
                     <h2 id="role-step-heading">What type of account?</h2>
                     <p class="auth-sub" id="role-step-sub"></p>
-
+ 
                     <div class="role-grid" id="donor-role-grid">
                         <button type="button" class="role-card" data-role="donor" data-subrole="civilian">
                             <i class="fa-solid fa-user"></i>
@@ -129,7 +129,7 @@
                             <span class="role-desc">Regular surplus donor. Requires a license upload.</span>
                         </button>
                     </div>
-
+ 
                     <div class="role-grid" id="receiver-role-grid">
                         <button type="button" class="role-card" data-role="receiver" data-subrole="ngo_head">
                             <i class="fa-solid fa-people-group"></i>
@@ -143,12 +143,12 @@
                         </button>
                     </div>
                 </div>
-
+ 
                 <div id="signup-step-details" class="signup-step">
                     <button type="button" class="back-link" id="back-to-role"><i class="fa-solid fa-arrow-left"></i> Change account type</button>
                     <h2>Your details</h2>
                     <p class="auth-sub" id="selected-role-label"></p>
-
+ 
                     <form id="signup-form">
                         <div class="input-group">
                             <label for="su-name">Full Name</label>
@@ -166,29 +166,29 @@
                             <label for="su-password">Password</label>
                             <input type="password" id="su-password" required minlength="8" placeholder="At least 8 characters">
                         </div>
-
+ 
                         <div class="input-group conditional-field" id="field-aadhaar">
                             <label for="su-aadhaar">Aadhaar Number</label>
                             <input type="text" id="su-aadhaar" inputmode="numeric" maxlength="12" placeholder="12-digit Aadhaar number">
                             <span class="field-hint">We validate this is a correctly formatted Aadhaar number. Final identity checks happen manually with your uploaded document.</span>
                         </div>
-
+ 
                         <div class="input-group conditional-field" id="field-document">
                             <label for="su-document" id="document-label">Upload Document</label>
                             <input type="file" id="su-document" accept=".pdf,.jpg,.jpeg,.png">
                             <span class="field-hint">PDF, JPG, or PNG. Max 5MB. Reviewed manually by our team - you can log in right away, but false documents will get your account suspended.</span>
                         </div>
-
+ 
                         <div class="cf-turnstile" data-sitekey="0x4AAAAAAER9c82U5CfcjtZL" data-callback="onSignupTurnstile"></div>
-
+ 
                         <button type="submit" class="btn-3d">Create Account</button>
                     </form>
                 </div>
-
+ 
                 <div id="signup-step-otp" class="signup-step">
                     <h2>Check your email</h2>
                     <p class="auth-sub">We sent a 6-digit code to <strong id="otp-email-display"></strong></p>
-
+ 
                     <form id="otp-form">
                         <div class="input-group">
                             <label for="otp-code">Verification Code</label>
@@ -198,19 +198,19 @@
                         <button type="button" id="resend-otp" class="btn-3d btn-secondary">Resend Code</button>
                     </form>
                 </div>
-
+ 
                 <div id="signup-step-done" class="signup-step">
                     <i class="fa-solid fa-circle-check success-icon"></i>
                     <h2 id="done-heading">Account active</h2>
                     <p class="auth-sub" id="done-message"></p>
                     <button type="button" class="btn-3d" id="go-to-login">Go to Log In</button>
                 </div>
-
+ 
             </section>
             </div>
         </div>
     </section>
-
+ 
     <!-- About Section -->
     <section id="about" class="section reverse">
         <div class="content fade-right">
@@ -223,7 +223,7 @@
             <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.bishophouse.com%2Fwp-content%2Fuploads%2F2026%2F05%2FTeam-engaging-at-table-ws.jpeg&f=1&nofb=1&ipt=aa23af81439d31cf3aa149bf1883e7ba033630949fb5b8866815b562bbc3e2a9" alt="Team Talking" class="img-3d">
         </div>
     </section>
-
+ 
     <!-- Donate Section -->
     <section id="donate" class="section">
         <div class="content fade-left">
@@ -232,7 +232,7 @@
             <p>Whether you're a restaurant with end-of-day surplus, or someone hosting a large gathering, you can list your available food here. Sign up as a donor to get started - our network of NGOs is always on standby to pick up and distribute.</p>
             <a href="#home" class="btn-3d">Sign Up to Donate</a>
         </div>
-
+ 
         <div class="image-container fade-right">
             <div class="contact-card-wrapper">
                 <p id="donate-alert" class="auth-alert hidden"></p>
@@ -241,23 +241,23 @@
                         <label for="donor-name">Name / Restaurant Name</label>
                         <input type="text" id="donor-name" name="donor_name" placeholder="e.g. Krabs and Chill" required>
                     </div>
-
+ 
                     <div class="input-group">
                         <label for="food-qty">Food Quantity</label>
                         <input type="text" id="food-qty" name="food_quantity" placeholder="e.g. Meals for 50 people" required>
                     </div>
-
+ 
                     <div class="input-group">
                         <label for="donor-address">Address</label>
                         <textarea id="donor-address" name="address" placeholder="e.g. rosevilla, chandnagar" required></textarea>
                     </div>
-
+ 
                     <button type="submit" class="btn-3d">List Food Availability</button>
                 </form>
             </div>
         </div>
     </section>
-
+ 
     <!-- Receive Section: receiver profile setup, shown to logged-in receivers -->
     <section id="receive" class="section reverse">
         <div class="content fade-right">
@@ -265,7 +265,7 @@
             <h3>Tell us where and what you can take</h3>
             <p>Set your address and feed preference once - we'll match you with the nearest available donation automatically. You can update this any time.</p>
         </div>
-
+ 
         <div class="image-container fade-left">
             <div class="contact-card-wrapper">
                 <p id="receiver-alert" class="auth-alert hidden"></p>
@@ -274,7 +274,7 @@
                         <label for="receiver-address">Full Address</label>
                         <textarea id="receiver-address" name="full_address" placeholder="e.g. Shanti Nagar Community Hall, Chandnagar" required></textarea>
                     </div>
-
+ 
                     <div class="input-group">
                         <label for="receiver-feed-pref">Feed Preference</label>
                         <select id="receiver-feed-pref" name="feed_preference" required>
@@ -283,13 +283,13 @@
                             <option value="both">Both</option>
                         </select>
                     </div>
-
+ 
                     <button type="submit" class="btn-3d">Save & Find Donations</button>
                 </form>
             </div>
         </div>
     </section>
-
+ 
     <!-- Download App Section -->
     <section id="app" class="section reverse">
         <div class="content fade-right">
@@ -309,14 +309,14 @@
             <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpsfiles.com%2Fwp-content%2Fuploads%2F2023%2F05%2FFree-Apple-Android-App-Icon-Mockup-PSD.jpg&f=1&nofb=1&ipt=9b281a57e38f248cb42a7e3dd21b9cf0ee51c82b463d3a2afa0c764e973aaefd" alt="Smartphone App Mockup" class="img-3d app-mockup">
         </div>
     </section>
-
+ 
     <!-- Contact Section -->
     <section id="contact" class="section">
         <div class="content fade-left">
             <h2>Contact Us</h2>
             <h3>We'd love to hear from you</h3>
             <p>Are you an NGO wanting to join our network? Or a restaurant looking for a long-term partnership? Reach out to our team.</p>
-
+ 
             <ul class="contact-info">
                 <li data-copy="Ramrao Adik Institute of Technology" title="Click to copy">
                     <i class="fa-solid fa-map-location"></i>
@@ -335,7 +335,7 @@
                 </li>
             </ul>
         </div>
-
+ 
         <div class="image-container fade-right">
             <div class="contact-card-wrapper">
                 <!-- Formspree Contact Form Integration -->
@@ -357,7 +357,7 @@
             </div>
         </div>
     </section>
-
+ 
     <!-- Footer -->
     <footer>
         <div class="social-icons">
@@ -372,7 +372,7 @@
             </a>
         </div>
     </footer>
-
+ 
     <script src="script.js"></script>
     <script>
         // Point this at your deployed Render backend URL before going live
@@ -381,3 +381,4 @@
     <script src="auth.js"></script>
 </body>
 </html>
+ 
