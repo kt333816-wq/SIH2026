@@ -20,6 +20,8 @@ This project is built using standard web technologies to ensure a fast, reliable
 *   **[Neon.tech](https://neon.tech/)** - Serverless Postgres database
 *   **[Cloudflare](https://www.cloudflare.com/)** - Security, performance, and CDN
 *   **Cloudflare Turnstile** - Bot protection (`TURNSTILE_SITE_KEY`)
+*   **[Brevo](https://www.brevo.com/)** - Transactional Email & OTP authentication (`BREVO_API_KEY`)
+*   **[OpenStreetMap (OSM)](https://www.openstreetmap.org/)** - Free open-source map & geocoding API for locations
 
 ---
 
@@ -31,15 +33,16 @@ Because Serviso is a dynamic website that interacts with a database, you cannot 
 
 1. **Git:** To clone the repository.
 2. **Local Web Server:** Download and install a software stack like **XAMPP**, **WAMP**, or **MAMP** (these come pre-packaged with an Apache web server and a local database environment).
-3. **Code Editor:** VS Code, Sublime Text, or your preferred editor.
+3. **Code Editor:** VS Code, Sublime Text, Vim, or your preferred editor.
 
 ### Installation Steps
 
 **1. Clone the repository**
 Open your terminal or command prompt and run:
 ```bash
-git clone [https://github.com/your-username/serviso.git](https://github.com/your-username/serviso.git)
-cd serviso 
+git clone [https://github.com/kt333816-wq/SIH2026.git](https://github.com/kt333816-wq/SIH2026.git) serviso
+cd serviso
+```
 
 
 #### 2. Move to your server directory
