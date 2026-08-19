@@ -54,4 +54,47 @@ router.post('/profile', async (req, res) => {
     res.json({ message: 'Receiver profile saved', location: coords });
 });
 
+// GET /api/receiver/current-match - does this receiver currently have a
+// listing matched and awaiting pickup? Used to decide whether to show the
+// "share my live location" control at all.
+router.get('/current-match', async (req, res) => {
+    if (req.user.role !== 'receiver') return res.status(403).json({ error: 'Receiver accounts only' });
+
+    const { rows } = await pool.query(
+        `SELECT id AS listing_id, feed_type, pickup_otp_expires_at
+         FROM food_listings
+         WHERE matched_receiver_id = $1 AND match_status = 'matched_pending_pickup'
+         ORDER BY matched_at DESC LIMIT 1`,
+        [req.user.sub]
+    );
+    res.json({ match: rows[0] || null });
+});
+
+// POST /api/receiver/live-location  { lat, lon }
+// Only accepted while the receiver has an active matched_pending_pickup
+// listing - there's no reason to store or expose a receiver's location
+// outside an active handover.
+router.post('/live-location', async (req, res) => {
+    if (req.user.role !== 'receiver') return res.status(403).json({ error: 'Receiver accounts only' });
+
+    const { lat, lon } = req.body;
+    if (typeof lat !== 'number' || typeof lon !== 'number') {
+        return res.status(400).json({ error: 'lat and lon must be numbers' });
+    }
+
+    const { rows } = await pool.query(
+        `SELECT id FROM food_listings WHERE matched_receiver_id = $1 AND match_status = 'matched_pending_pickup' LIMIT 1`,
+        [req.user.sub]
+    );
+    if (!rows[0]) {
+        return res.status(400).json({ error: 'No active pickup to share your location for' });
+    }
+
+    await pool.query(
+        `UPDATE users SET live_latitude = $1, live_longitude = $2, live_location_updated_at = now() WHERE id = $3`,
+        [lat, lon, req.user.sub]
+    );
+    res.json({ message: 'Location updated' });
+});
+
 module.exports = router;

@@ -6,36 +6,36 @@
     --accent: #e67e22;
     --accent-dark: #d35400;
 }
- 
- 
+
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
- 
+
 html, body {
     max-width: 100%;
     overflow-x: hidden; 
     position: relative;
 }
- 
+
 html {
     scroll-behavior: smooth;
 }
- 
+
 body {
     background-color: var(--bg-primary);
     color: var(--text-light);
     font-family: 'Poppins', sans-serif;
 }
- 
+
 h1, h2, h3, .logo a {
     font-family: "Lilita One", sans-serif; 
     font-weight: normal;
     letter-spacing: 1px;
 }
- 
+
 /* Header & Navbar */
 header {
     display: flex;
@@ -50,20 +50,20 @@ header {
     z-index: 1000;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
- 
+
 .logo a {
     font-size: 32px;
     text-decoration: none;
     color: var(--accent);
     text-shadow: 2px 2px 0px var(--text-dark);
 }
- 
+
 .navbar ul {
     display: flex;
     gap: 30px;
     list-style: none;
 }
- 
+
 .navbar a {
     text-decoration: none;
     font-size: 18px;
@@ -74,11 +74,11 @@ header {
     transition: color 0.3s;
     white-space: nowrap;
 }
- 
+
 .navbar a:hover {
     color: var(--accent);
 }
- 
+
 .navbar a::after {
     content: '';
     position: absolute;
@@ -91,11 +91,11 @@ header {
     transition: transform 0.3s ease;
     border-radius: 5px;
 }
- 
+
 .navbar a:hover::after {
     transform: scaleX(1);
 }
- 
+
 /* Sections Layout */
 .section {
     display: flex;
@@ -106,32 +106,32 @@ header {
     gap: 50px;
     scroll-margin-top: 90px;
 }
- 
+
 .section.reverse {
     background-color: var(--bg-secondary);
     color: var(--text-dark);
     flex-direction: row-reverse;
 }
- 
+
 .content {
     flex: 1;
     max-width: 600px;
 }
- 
+
 .image-container {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
 }
- 
- 
+
+
 h1 { font-size: 80px; margin-bottom: 10px; color: var(--accent); }
 h2 { font-size: 50px; margin-bottom: 10px; }
 .reverse h2 { color: var(--bg-primary); }
 h3 { font-size: 28px; margin-bottom: 20px; opacity: 0.9; }
 p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
- 
+
 /* 3D Button */
 .btn-3d {
     display: inline-block;
@@ -147,17 +147,17 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     box-shadow: 0 8px 0 var(--accent-dark), 0 15px 20px rgba(0,0,0,0.3);
     transition: all 0.1s ease-in-out;
 }
- 
+
 .btn-3d:hover {
     transform: translateY(3px);
     box-shadow: 0 5px 0 var(--accent-dark), 0 10px 15px rgba(0,0,0,0.3);
 }
- 
+
 .btn-3d:active {
     transform: translateY(8px);
     box-shadow: 0 0 0 var(--accent-dark), 0 2px 5px rgba(0,0,0,0.3);
 }
- 
+
 .btn-secondary {
     background-color: var(--bg-primary);
     box-shadow: 0 8px 0 #2a1b14, 0 15px 20px rgba(0,0,0,0.2);
@@ -168,14 +168,14 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
 .btn-secondary:active {
     box-shadow: 0 0 0 #2a1b14, 0 2px 5px rgba(0,0,0,0.2);
 }
- 
+
 /* App Buttons */
 .app-buttons {
     display: flex;
     gap: 20px;
 }
- 
- 
+
+
 .app-btn {
     display: inline-flex;
     align-items: center;
@@ -184,20 +184,20 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     font-size: 18px; 
     padding: 12px 28px;
 }
- 
+
 .app-btn i {
     font-size: 28px;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
- 
+
 .app-btn:hover i {
     transform: scale(1.25) rotate(-8deg); 
 }
- 
+
 #store-icon {
     height: 50px;
 }
- 
+
 .img-3d {
     width: 100%;
     max-width: 550px;
@@ -205,26 +205,26 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     box-shadow: -15px 15px 0px var(--accent), 0 20px 30px rgba(0,0,0,0.5);
     transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
- 
+
 .section.reverse .img-3d {
     box-shadow: 15px 15px 0px var(--bg-primary), 0 20px 30px rgba(0,0,0,0.3);
 }
- 
+
 .img-3d:hover {
     transform: translateY(-10px) rotate(2deg);
     box-shadow: -20px 20px 0px var(--accent), 0 30px 40px rgba(0,0,0,0.6);
 }
- 
+
 .section.reverse .img-3d:hover {
     transform: translateY(-10px) rotate(-2deg);
     box-shadow: 20px 20px 0px var(--bg-primary), 0 30px 40px rgba(0,0,0,0.4);
 }
- 
+
 .app-mockup {
     border-radius: 40px;
     max-width: 300px;
 }
- 
+
 /* Forms*/
 .donate-form {
     display: flex;
@@ -233,12 +233,12 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     width: 100%;
     max-width: 450px;
 }
- 
- 
+
+
 #contact.section {
     gap: 80px; 
 }
- 
+
 /* Form Container Card */
 .contact-card-wrapper {
     width: 100%;
@@ -249,13 +249,13 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
- 
- 
+
+
 .contact-card-wrapper:hover {
     transform: translateY(-10px) rotate(-1deg);
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
- 
+
 .contact-form {
     display: flex;
     flex-direction: column;
@@ -263,21 +263,21 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     width: 100%;
     max-width: none;
 }
- 
+
 /* Input */
 .input-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
- 
+
 .input-group label {
     font-size: 14px;
     font-weight: 600;
     color: var(--accent);
     padding-left: 5px;
 }
- 
+
 .contact-form input, 
 .contact-form textarea,
 .contact-form select {
@@ -290,18 +290,18 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
     transition: all 0.3s ease;
 }
- 
+
 .contact-form select {
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
 }
- 
+
 .contact-form input::placeholder, 
 .contact-form textarea::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
- 
- 
+
+
 .contact-form input:focus, 
 .contact-form textarea:focus,
 .contact-form select:focus {
@@ -311,12 +311,88 @@ p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
                 0 0 15px rgba(230, 126, 34, 0.3);
     background-color: rgba(255, 255, 255, 0.08);
 }
- 
+
 .contact-form .btn-3d {
     width: 100%;
     margin-top: 10px;
 }
- 
+
+/* Donor status: rating line + AI surplus-prediction panel (canteen accounts only) */
+.donor-status-panel {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.donor-status-panel.hidden { display: none; }
+
+#donor-rating-line {
+    font-family: 'Lilita One', sans-serif;
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 0;
+}
+
+.ai-prediction-panel {
+    margin-top: 15px;
+    padding: 15px 18px;
+    background: rgba(230, 126, 34, 0.08);
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    border-radius: 12px;
+}
+
+.ai-prediction-panel.hidden { display: none; }
+
+.ai-prediction-panel h4 {
+    font-family: 'Lilita One', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    margin-bottom: 6px;
+}
+
+.ai-prediction-panel p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 0;
+    opacity: 0.9;
+}
+
+/* Pickup-code confirmation, shown once a listing is matched */
+.pickup-match-panel {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.pickup-match-panel.hidden { display: none; }
+
+#pickup-match-message {
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.tracking-map {
+    width: 100%;
+    height: 260px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.tracking-distance {
+    font-size: 14px;
+    opacity: 0.85;
+    margin-bottom: 15px;
+}
+
+#verify-pickup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 /* Base input/textarea reset (fields outside .contact-form, e.g. plain forms) */
 input, textarea {
     padding: 15px;
@@ -326,7 +402,7 @@ input, textarea {
     font-size: 16px;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
 }
- 
+
 .contact-info {
     list-style: none;
     display: flex;
@@ -335,7 +411,7 @@ input, textarea {
     margin-top: 20px;
     padding: 0;
 }
- 
+
 /* Footer */
 footer {
     text-align: center;
@@ -347,20 +423,20 @@ footer {
     align-items: center;
     gap: 25px;
 }
- 
+
 footer p {
     font-size: 15px;
     margin-bottom: 0;
     opacity: 0.8;
 }
- 
+
 .social-icons {
     display: flex;
     gap: 20px;
     justify-content: center;
 }
- 
- 
+
+
 .social-link {
     display: inline-flex;
     align-items: center;
@@ -375,35 +451,35 @@ footer p {
     box-shadow: 0 6px 0 #1b110c, 0 10px 15px rgba(0,0,0,0.3);
     transition: all 0.2s ease-in-out;
 }
- 
- 
+
+
 .social-link i {
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
- 
- 
+
+
 .social-link:hover {
     transform: translateY(-5px);
     color: var(--accent); 
     box-shadow: 0 8px 0 #1b110c, 0 15px 20px rgba(0,0,0,0.4);
 }
- 
+
 .social-link:hover i {
     transform: scale(1.2) rotate(10deg);
 }
- 
- 
+
+
 .social-link:active {
     transform: translateY(4px);
     box-shadow: 0 2px 0 #1b110c, 0 4px 5px rgba(0,0,0,0.3);
 }
- 
+
 .hamburger {
     display: none;
     cursor: pointer;
     z-index: 1001; 
 }
- 
+
 .hamburger .bar {
     display: block;
     width: 30px;
@@ -413,25 +489,25 @@ footer p {
     border-radius: 4px;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
- 
+
 .fade-left {
     opacity: 0;
     transform: translateX(-80px);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
- 
+
 .fade-right {
     opacity: 0;
     transform: translateX(80px);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
- 
- 
+
+
 .visible {
     opacity: 1;
     transform: translateX(0);
 }
- 
+
 .contact-info li {
     position: relative;
     display: flex;
@@ -448,29 +524,29 @@ footer p {
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     user-select: none;
 }
- 
+
 .contact-info li i {
     font-size: 22px;
     color: var(--accent);
     transition: transform 0.3s ease;
 }
- 
+
 .contact-info li:hover {
     transform: translateY(-3px);
     box-shadow: 0 7px 0 #2a1b14, 0 12px 20px rgba(0, 0, 0, 0.3);
     background-color: #59392b;
 }
- 
+
 .contact-info li:hover i {
     transform: scale(1.2) rotate(-5deg);
 }
- 
+
 .contact-info li:active {
     transform: translateY(2px);
     box-shadow: 0 2px 0 #2a1b14, 0 4px 5px rgba(0, 0, 0, 0.2);
 }
- 
- 
+
+
 .copy-badge {
     position: absolute;
     right: 15px;
@@ -486,20 +562,20 @@ footer p {
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
- 
- 
+
+
 .contact-info li.copied .copy-badge {
     opacity: 1;
     transform: translateY(0) scale(1);
 }
- 
- 
+
+
 @media (max-width: 1100px) {
- 
+
     .hamburger {
         display: block;
     }
- 
+
     .navbar {
         position: fixed;
         top: 0;
@@ -514,46 +590,46 @@ footer p {
         transition: right 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0); 
         z-index: 1000;
     }
- 
+
    
     .navbar.active {
         right: 0;
     }
- 
+
     .navbar ul {
         flex-direction: column;
         gap: 40px;
         text-align: center;
     }
- 
+
     .navbar a {
         font-size: 28px; 
     }
- 
+
     .hamburger.active .bar:nth-child(1) {
         transform: translateY(10px) rotate(45deg);
         background-color: var(--accent);
     }
- 
+
     .hamburger.active .bar:nth-child(2) {
         opacity: 0;
         transform: translateX(20px); 
     }
- 
+
     .hamburger.active .bar:nth-child(3) {
         transform: translateY(-10px) rotate(-45deg);
         background-color: var(--accent);
     }
- 
+
     .section, .section.reverse {
         flex-direction: column;
         text-align: center;
         padding-top: 120px;
     }
- 
+
     h1 { font-size: 60px; }
     h2 { font-size: 40px; }
- 
+
     .img-3d {
         box-shadow: 0 15px 0px var(--accent) !important;
         margin-top: 30px;
@@ -562,7 +638,7 @@ footer p {
     .app-buttons {
         justify-content: center;
     }
- 
+
     .contact-card-wrapper {
         padding: 25px; 
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
@@ -573,4 +649,3 @@ footer p {
         gap: 40px;
     }
 }
- 

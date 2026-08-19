@@ -121,3 +121,83 @@ ALTER TABLE food_listings
     ADD COLUMN IF NOT EXISTS longitude NUMERIC(11, 8),
     ADD COLUMN IF NOT EXISTS matched_receiver_id UUID REFERENCES users(id),
     ADD COLUMN IF NOT EXISTS expires_for_human_at TIMESTAMPTZ DEFAULT (now() + INTERVAL '2 hours');
+
+-- ============================================================
+-- Phase 2-4: PostGIS distance-matching, OTP handoff, ratings,
+-- and surplus-prediction storage. Append this to schema.sql -
+-- every statement here is idempotent like the rest of the file.
+-- ============================================================
+
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Geography columns for real distance queries (kept alongside the existing
+-- plain lat/long columns, which stay useful for display/debugging)
+ALTER TABLE receiver_profiles
+    ADD COLUMN IF NOT EXISTS location geography(Point, 4326);
+
+UPDATE receiver_profiles
+    SET location = ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography
+    WHERE location IS NULL AND latitude IS NOT NULL AND longitude IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_receiver_profiles_location ON receiver_profiles USING GIST (location);
+
+ALTER TABLE food_listings
+    ADD COLUMN IF NOT EXISTS location geography(Point, 4326);
+
+UPDATE food_listings
+    SET location = ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography
+    WHERE location IS NULL AND latitude IS NOT NULL AND longitude IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_food_listings_location ON food_listings USING GIST (location);
+
+-- Matching + pickup-confirmation state machine
+DO $$ BEGIN
+    CREATE TYPE listing_match_status AS ENUM (
+        'searching_human',
+        'searching_animal',
+        'matched_pending_pickup',
+        'completed',
+        'expired_unmatched'
+    );
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
+
+ALTER TABLE food_listings
+    ADD COLUMN IF NOT EXISTS match_status listing_match_status NOT NULL DEFAULT 'searching_human',
+    ADD COLUMN IF NOT EXISTS pickup_otp_hash TEXT,
+    ADD COLUMN IF NOT EXISTS pickup_otp_expires_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS pickup_otp_attempts INT NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS matched_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
+
+CREATE INDEX IF NOT EXISTS idx_food_listings_match_status ON food_listings (match_status, feed_type, expires_for_human_at);
+
+-- Ratings: driven off a simple completed-donations counter, scaled 0-5 in code
+-- (utils/rating.js) rather than stored as a column, so the scale can be
+-- retuned later without a migration.
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS completed_donations_count INT NOT NULL DEFAULT 0;
+
+-- AI surplus-prediction history, restaurant/govt canteen donors only.
+-- Starts as a heuristic (see utils prediction logic) - this table exists so a
+-- real trained model can be swapped in later without changing the API shape.
+CREATE TABLE IF NOT EXISTS surplus_predictions (
+    id                       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    donor_id                 UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    predicted_for_date       DATE NOT NULL,
+    predicted_quantity_hint  VARCHAR(255),
+    confidence               NUMERIC(3,2),
+    method                   VARCHAR(30) NOT NULL DEFAULT 'heuristic_avg', -- swap to 'ml_model' later
+    created_at               TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (donor_id, predicted_for_date)
+);
+-- ============================================================
+-- Live GPS tracking (donor pickup-view map). Append to schema.sql
+-- alongside schema_additions_phase2.sql.
+-- ============================================================
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS live_latitude NUMERIC(10,8),
+    ADD COLUMN IF NOT EXISTS live_longitude NUMERIC(11,8),
+    ADD COLUMN IF NOT EXISTS live_location_updated_at TIMESTAMPTZ;
