@@ -56,8 +56,34 @@ If you are using **XAMPP**, place the project folder inside the server's root di
 Create a `.env` or configuration file in the root directory (depending on your backend setup) and add your external API keys and database credentials:
 
 ```env
-DATABASE_URL=your_neon_tech_sql_connection_string
-TURNSTILE_SITE_KEY=your_cloudflare_turnstile_site_key
+# Server
+PORT=4000
+NODE_ENV=production
+BREVO_API_KEY=your_brevo_api_key_here
+FRONTEND_URL=https://your-serviso-domain.pages.dev
+
+# PostgreSQL
+DATABASE_URL=postgresql://user:password@host:5432/serviso
+
+# JWT
+JWT_SECRET=your_jwt_secret_key_here
+JWT_EXPIRES_IN=7d
+
+# Email (OTP delivery)
+
+EMAIL_FROM=your-email
+
+# Cloudflare Turnstile (captcha)
+TURNSTILE_SECRET_KEY=your_turnstile_secret_key_here
+
+# Admin bootstrap account
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your_secure_admin_password_here
+
+# OTP settings
+OTP_EXPIRY_MINUTES=10
+OTP_LENGTH=6
+LOCATIONIQ_TOKEN=your_locationiq_token_here
 ```
 
 #### 4. Set up the Database
