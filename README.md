@@ -20,6 +20,8 @@ This project is built using standard web technologies to ensure a fast, reliable
 *   **[Neon.tech](https://neon.tech/)** - Serverless Postgres database
 *   **[Cloudflare](https://www.cloudflare.com/)** - Security, performance, and CDN
 *   **Cloudflare Turnstile** - Bot protection (`TURNSTILE_SITE_KEY`)
+*   **[Brevo](https://www.brevo.com/)** - Transactional Email & OTP authentication (`BREVO_API_KEY`)
+*   **[OpenStreetMap (OSM)](https://www.openstreetmap.org/)** - Free open-source map & geocoding API for locations
 
 ---
 
@@ -31,15 +33,16 @@ Because Serviso is a dynamic website that interacts with a database, you cannot 
 
 1. **Git:** To clone the repository.
 2. **Local Web Server:** Download and install a software stack like **XAMPP**, **WAMP**, or **MAMP** (these come pre-packaged with an Apache web server and a local database environment).
-3. **Code Editor:** VS Code, Sublime Text, or your preferred editor.
+3. **Code Editor:** VS Code, Sublime Text, Vim, or your preferred editor.
 
 ### Installation Steps
 
 **1. Clone the repository**
 Open your terminal or command prompt and run:
 ```bash
-git clone [https://github.com/your-username/serviso.git](https://github.com/your-username/serviso.git)
-cd serviso 
+git clone [https://github.com/kt333816-wq/SIH2026.git](https://github.com/kt333816-wq/SIH2026.git) serviso
+cd serviso
+```
 
 
 #### 2. Move to your server directory
@@ -53,8 +56,34 @@ If you are using **XAMPP**, place the project folder inside the server's root di
 Create a `.env` or configuration file in the root directory (depending on your backend setup) and add your external API keys and database credentials:
 
 ```env
-DATABASE_URL=your_neon_tech_sql_connection_string
-TURNSTILE_SITE_KEY=your_cloudflare_turnstile_site_key
+# Server
+PORT=4000
+NODE_ENV=production
+BREVO_API_KEY=your_brevo_api_key_here
+FRONTEND_URL=https://your-serviso-domain.pages.dev
+
+# PostgreSQL
+DATABASE_URL=postgresql://user:password@host:5432/serviso
+
+# JWT
+JWT_SECRET=your_jwt_secret_key_here
+JWT_EXPIRES_IN=7d
+
+# Email (OTP delivery)
+
+EMAIL_FROM=your-email
+
+# Cloudflare Turnstile (captcha)
+TURNSTILE_SECRET_KEY=your_turnstile_secret_key_here
+
+# Admin bootstrap account
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your_secure_admin_password_here
+
+# OTP settings
+OTP_EXPIRY_MINUTES=10
+OTP_LENGTH=6
+LOCATIONIQ_TOKEN=your_locationiq_token_here
 ```
 
 #### 4. Set up the Database
