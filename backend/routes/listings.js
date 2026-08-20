@@ -10,10 +10,10 @@ router.use(requireAuth);
 
 // POST /api/listings  { food_quantity, address }
 // Donor-only. Geocodes the address, saves the listing, then immediately tries
-// to match it with the nearest human-feed receiver. If a match is found, the
-// response includes a pickup OTP - the donor reads this out to the receiver
-// in person at handover, and whoever's logged in at that point (either side)
-// submits it back via /verify-pickup to confirm the food changed hands.
+// to match it with the nearest human-feed receiver. The pickup OTP itself is
+// NOT sent back here - only the matched receiver ever sees their own code
+// (via GET /api/receiver/current-match). The donor verifies pickup by asking
+// the receiver for that code in person and submitting it via /verify-pickup.
 router.post('/', async (req, res) => {
     if (req.user.role !== 'donor') return res.status(403).json({ error: 'Donor accounts only' });
 
@@ -49,11 +49,10 @@ router.post('/', async (req, res) => {
 
         res.status(201).json({
             message: match
-                ? 'Listing posted and matched with a nearby receiver - share this pickup code with them.'
+                ? "Listing posted and matched with a nearby receiver - they'll show up with a pickup code for you to verify."
                 : 'Listing posted - searching for a nearby receiver. If none turns up within 2 hours, it moves to animal feed automatically.',
             listingId,
             matched: !!match,
-            pickupOtp: match ? match.otp : undefined,
             otpExpiresAt: match ? match.expiresAt : undefined
         });
     } catch (err) {
@@ -91,7 +90,7 @@ router.get('/:id/status', async (req, res) => {
 // GET /api/listings/:id/tracking
 // Donor or matched receiver only. Returns the listing's fixed pickup point
 // plus the receiver's most recent shared live location (if any), and the
-// straight-line distance between them for the donor's map view.
+// straight-line distance between them for the map view on either side.
 router.get('/:id/tracking', async (req, res) => {
     try {
         const { rows } = await pool.query(
@@ -127,10 +126,10 @@ router.get('/:id/tracking', async (req, res) => {
 });
 
 // POST /api/listings/:id/verify-pickup  { otp }
-// Either party on the listing can submit the code. A correct match completes
-// the listing, stops the search, and counts toward the donor's rating. Wrong
-// attempts are capped well below the 2-hour window so the code can't just be
-// brute-forced (it's 6 digits).
+// Donor-side confirmation: the receiver reads their code out in person, the
+// donor types it in here. A correct match completes the listing, stops the
+// search, and counts toward the donor's rating. Wrong attempts are capped
+// well below the 2-hour window so the code can't just be brute-forced.
 const MAX_OTP_ATTEMPTS = 5;
 
 router.post('/:id/verify-pickup', async (req, res) => {

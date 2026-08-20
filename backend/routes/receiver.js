@@ -61,7 +61,7 @@ router.get('/current-match', async (req, res) => {
     if (req.user.role !== 'receiver') return res.status(403).json({ error: 'Receiver accounts only' });
 
     const { rows } = await pool.query(
-        `SELECT id AS listing_id, feed_type, pickup_otp_expires_at
+        `SELECT id AS listing_id, feed_type, pickup_otp, pickup_otp_expires_at
          FROM food_listings
          WHERE matched_receiver_id = $1 AND match_status = 'matched_pending_pickup'
          ORDER BY matched_at DESC LIMIT 1`,
@@ -69,7 +69,6 @@ router.get('/current-match', async (req, res) => {
     );
     res.json({ match: rows[0] || null });
 });
-
 // POST /api/receiver/live-location  { lat, lon }
 // Only accepted while the receiver has an active matched_pending_pickup
 // listing - there's no reason to store or expose a receiver's location

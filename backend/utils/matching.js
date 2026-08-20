@@ -51,24 +51,23 @@ async function attemptMatch(listingId, feedType) {
             return null;
         }
 
-        const otp = generateOtpCode();
+               const otp = generateOtpCode();
         const otpHash = await bcrypt.hash(otp, 10);
         const expiresAt = new Date(Date.now() + OTP_VALIDITY_MS);
-
         await client.query(
             `UPDATE food_listings
              SET matched_receiver_id = $1,
                  feed_type = $2,
                  match_status = 'matched_pending_pickup',
                  pickup_otp_hash = $3,
-                 pickup_otp_expires_at = $4,
+                 pickup_otp = $4,
+                 pickup_otp_expires_at = $5,
                  pickup_otp_attempts = 0,
                  matched_at = now(),
                  updated_at = now()
-             WHERE id = $5`,
-            [receiver.user_id, feedType, otpHash, expiresAt, listingId]
+             WHERE id = $6`,
+            [receiver.user_id, feedType, otpHash, otp, expiresAt, listingId]
         );
-
         return { receiverId: receiver.user_id, otp, expiresAt };
     } finally {
         client.release();
