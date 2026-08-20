@@ -267,6 +267,8 @@
                     <button type="submit" class="btn-3d">List Food Availability</button>
                 </form>
 
+                <!-- Donor side: no OTP shown here - donor asks the receiver for
+                     their code at handover and enters it below to confirm. -->
                 <div id="pickup-match-panel" class="pickup-match-panel hidden">
                     <p id="pickup-match-message"></p>
                     <div id="tracking-map" class="tracking-map"></div>
@@ -312,10 +314,25 @@
                     <button type="submit" class="btn-3d">Save & Find Donations</button>
                 </form>
 
-                <!-- Minimal placeholder for now - full receiver pickup UI is still to come -->
-                <div id="receiver-share-location-panel" class="hidden" style="margin-top: 20px;">
-                    <p id="receiver-share-status" style="font-size: 14px; opacity: 0.8; margin-bottom: 10px;"></p>
-                    <button type="button" class="btn-3d btn-secondary" id="receiver-share-location-btn">Share My Live Location</button>
+                <!-- Receiver side: shown once matched. Displays the receiver's
+                     own pickup code (they tell this to the donor in person -
+                     they never type in a code themselves), a live tracking
+                     map of the donor's pickup point, and live-location sharing. -->
+                <div id="receiver-match-panel" class="pickup-match-panel hidden">
+                    <p id="receiver-match-message"></p>
+
+                    <div style="text-align:center; margin: 15px 0;">
+                        <p style="font-size:14px; opacity:0.8; margin-bottom: 6px;">Your pickup code - tell this to the donor at handover:</p>
+                        <p id="receiver-otp-code" style="font-family:'Lilita One', sans-serif; font-size: 34px; letter-spacing: 8px; color: var(--bg-primary);"></p>
+                    </div>
+
+                    <div id="receiver-tracking-map" class="tracking-map"></div>
+                    <p id="receiver-tracking-distance" class="tracking-distance"></p>
+
+                    <div>
+                        <p id="receiver-share-status" style="font-size: 14px; opacity: 0.8; margin-bottom: 10px;"></p>
+                        <button type="button" class="btn-3d btn-secondary" id="receiver-share-location-btn">Share My Live Location</button>
+                    </div>
                 </div>
             </div>
         </div>

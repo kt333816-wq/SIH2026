@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     safeInit('initVerifyPickupForm', initVerifyPickupForm);
     safeInit('initReceiverForm', initReceiverForm);
     safeInit('initReceiverLiveLocation', initReceiverLiveLocation);
+    safeInit('initReceiverShareLocationButton', initReceiverShareLocationButton);
 
     safeInit('backToCategory', () => {
         document.getElementById('back-to-category').addEventListener('click', () => showSignupStep('category'));
@@ -219,8 +220,8 @@ function initDonateForm() {
                 const panel = document.getElementById('pickup-match-panel');
                 const msg = document.getElementById('pickup-match-message');
                 panel.classList.remove('hidden');
-                msg.innerHTML = `Matched! Share this pickup code with the receiver at handover: <strong style="font-size:20px;letter-spacing:3px;">${data.pickupOtp}</strong><br>Valid until ${new Date(data.otpExpiresAt).toLocaleTimeString()}.`;
-                startTrackingMap(data.listingId);
+                msg.innerHTML = `Matched! Ask the receiver for their pickup code when they arrive, and enter it below to confirm the handover.${data.otpExpiresAt ? `<br>Valid until ${new Date(data.otpExpiresAt).toLocaleTimeString()}.` : ''}`;
+                donorTrackingMap.start(data.listingId);
             }
         } catch (err) {
             showDonateAlert('Could not reach the server. Please try again.');
@@ -229,78 +230,88 @@ function initDonateForm() {
 }
 
 let currentListingId = null;
-let trackingMap = null;
-let donorMarker = null;
-let receiverMarker = null;
-let trackingPollHandle = null;
+let receiverCurrentListingId = null;
 
 // ---------------------------------------------------------------------------
-// Live pickup map: fixed marker for the donor's listed address, live-updating
-// marker for the matched receiver's shared location (if they're sharing it
-// yet), polled every 15s. Stops polling once the listing completes.
+// Generic live tracking map - used independently by both the donor's and
+// receiver's match panels (separate map/marker/poll state each, so the two
+// never collide if both happened to be open, e.g. two tabs on one machine).
 // ---------------------------------------------------------------------------
-function startTrackingMap(listingId) {
-    const token = localStorage.getItem('serviso_token');
-    const mapEl = document.getElementById('tracking-map');
-    const distanceEl = document.getElementById('tracking-distance');
-    if (!mapEl || typeof L === 'undefined') return;
+function createTrackingMap(mapElId, distanceElId) {
+    let map = null;
+    let donorMarker = null;
+    let receiverMarker = null;
+    let pollHandle = null;
 
-    if (!trackingMap) {
-        trackingMap = L.map('tracking-map');
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors',
-            maxZoom: 19
-        }).addTo(trackingMap);
+    function start(listingId) {
+        const token = localStorage.getItem('serviso_token');
+        const mapEl = document.getElementById(mapElId);
+        const distanceEl = document.getElementById(distanceElId);
+        if (!mapEl || typeof L === 'undefined') return;
+
+        if (!map) {
+            map = L.map(mapElId);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+        }
+
+        const poll = async () => {
+            try {
+                const res = await fetch(`${API_BASE}/listings/${listingId}/tracking`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (!res.ok) return;
+
+                const donorLatLng = [data.donorLocation.lat, data.donorLocation.lon];
+                if (!donorMarker) {
+                    donorMarker = L.marker(donorLatLng).addTo(map).bindPopup('Pickup point');
+                    map.setView(donorLatLng, 13);
+                }
+
+                if (data.receiverLocation) {
+                    const receiverLatLng = [data.receiverLocation.lat, data.receiverLocation.lon];
+                    if (!receiverMarker) {
+                        receiverMarker = L.marker(receiverLatLng).addTo(map).bindPopup('Receiver - live');
+                    } else {
+                        receiverMarker.setLatLng(receiverLatLng);
+                    }
+                    map.fitBounds([donorLatLng, receiverLatLng], { padding: [30, 30] });
+
+                    const km = (data.distanceMeters / 1000).toFixed(2);
+                    distanceEl.textContent = `Receiver is ${km} km away - last updated ${new Date(data.receiverLocation.updatedAt).toLocaleTimeString()}`;
+                } else {
+                    distanceEl.textContent = 'Waiting for the receiver to share their live location...';
+                }
+
+                if (data.matchStatus === 'completed' || data.matchStatus === 'searching_animal') {
+                    clearInterval(pollHandle);
+                    distanceEl.textContent = data.matchStatus === 'completed'
+                        ? 'Pickup completed - tracking stopped.'
+                        : 'This match fell through - no longer tracking.';
+                }
+            } catch {
+                // Transient network issue - next poll will retry.
+            }
+        };
+
+        poll();
+        clearInterval(pollHandle);
+        pollHandle = setInterval(poll, 15000);
     }
 
-    const poll = async () => {
-        try {
-            const res = await fetch(`${API_BASE}/listings/${listingId}/tracking`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const data = await res.json();
-            if (!res.ok) return;
-
-            const donorLatLng = [data.donorLocation.lat, data.donorLocation.lon];
-            if (!donorMarker) {
-                donorMarker = L.marker(donorLatLng).addTo(trackingMap).bindPopup('Pickup point (you)');
-                trackingMap.setView(donorLatLng, 13);
-            }
-
-            if (data.receiverLocation) {
-                const receiverLatLng = [data.receiverLocation.lat, data.receiverLocation.lon];
-                if (!receiverMarker) {
-                    receiverMarker = L.marker(receiverLatLng).addTo(trackingMap).bindPopup('Receiver - live');
-                } else {
-                    receiverMarker.setLatLng(receiverLatLng);
-                }
-                trackingMap.fitBounds([donorLatLng, receiverLatLng], { padding: [30, 30] });
-
-                const km = (data.distanceMeters / 1000).toFixed(2);
-                distanceEl.textContent = `Receiver is ${km} km away - last updated ${new Date(data.receiverLocation.updatedAt).toLocaleTimeString()}`;
-            } else {
-                distanceEl.textContent = 'Waiting for the receiver to share their live location...';
-            }
-
-            if (data.matchStatus === 'completed' || data.matchStatus === 'searching_animal') {
-                clearInterval(trackingPollHandle);
-                distanceEl.textContent = data.matchStatus === 'completed'
-                    ? 'Pickup completed - tracking stopped.'
-                    : 'This match fell through - no longer tracking.';
-            }
-        } catch {
-            // Transient network issue - next poll will retry.
-        }
-    };
-
-    poll();
-    clearInterval(trackingPollHandle);
-    trackingPollHandle = setInterval(poll, 15000);
+    return { start };
 }
+
+const donorTrackingMap = createTrackingMap('tracking-map', 'tracking-distance');
+const receiverTrackingMap = createTrackingMap('receiver-tracking-map', 'receiver-tracking-distance');
+
 // ---------------------------------------------------------------------------
-// Pickup confirmation: either the donor or the matched receiver enters the
-// OTP that was shared at handover. A correct code completes the listing and
-// stops the search on the backend.
+// Pickup confirmation (donor side): the donor asks the matched receiver for
+// their code at handover and enters it here. A correct code completes the
+// listing and stops the search on the backend.
 // ---------------------------------------------------------------------------
 function initVerifyPickupForm() {
     const form = document.getElementById('verify-pickup-form');
@@ -409,17 +420,22 @@ function initReceiverForm() {
 }
 
 // ---------------------------------------------------------------------------
-// Receiver live-location sharing - minimal version for now (posts a snapshot
-// every 20s while toggled on, rather than continuous GPS watch, to go easy
-// on battery). This is a placeholder until the fuller receiver pickup UI is
-// built - only shown at all if the receiver currently has a matched listing.
+// Receiver match panel: polls for an active match (a match can appear at any
+// time after the profile is saved, not just at page load), then shows the
+// receiver's own pickup code, the tracking map, and live-location sharing.
 // ---------------------------------------------------------------------------
-let liveLocationInterval = null;
+let receiverMatchPollHandle = null;
 
-async function initReceiverLiveLocation() {
+function initReceiverLiveLocation() {
     const user = getStoredUser();
     if (!user || user.role !== 'receiver') return;
 
+    checkReceiverMatch();
+    clearInterval(receiverMatchPollHandle);
+    receiverMatchPollHandle = setInterval(checkReceiverMatch, 15000);
+}
+
+async function checkReceiverMatch() {
     const token = localStorage.getItem('serviso_token');
     let currentMatch;
     try {
@@ -427,17 +443,42 @@ async function initReceiverLiveLocation() {
             headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
+        if (!res.ok) return;
         currentMatch = data.match;
     } catch {
         return;
     }
-    if (!currentMatch) return;
 
-    const panel = document.getElementById('receiver-share-location-panel');
-    const statusEl = document.getElementById('receiver-share-status');
-    const btn = document.getElementById('receiver-share-location-btn');
+    const panel = document.getElementById('receiver-match-panel');
+
+    if (!currentMatch) {
+        panel.classList.add('hidden');
+        receiverCurrentListingId = null;
+        return;
+    }
+
+    // Already showing this match - don't restart the map/poll every 15s.
+    if (receiverCurrentListingId === currentMatch.listing_id) return;
+
+    receiverCurrentListingId = currentMatch.listing_id;
     panel.classList.remove('hidden');
-    statusEl.textContent = 'You have a matched pickup - share your live location so the donor can see you en route.';
+    document.getElementById('receiver-match-message').textContent =
+        "You've been matched! Head to the pickup point shown below and tell the donor your code once you're there.";
+    document.getElementById('receiver-otp-code').textContent = currentMatch.pickup_otp || '';
+    receiverTrackingMap.start(currentMatch.listing_id);
+}
+
+// ---------------------------------------------------------------------------
+// Receiver live-location sharing - posts a snapshot every 20s while toggled
+// on, rather than continuous GPS watch, to go easy on battery. Only shown at
+// all once the receiver has an active matched listing (see checkReceiverMatch).
+// ---------------------------------------------------------------------------
+let liveLocationInterval = null;
+
+function initReceiverShareLocationButton() {
+    const btn = document.getElementById('receiver-share-location-btn');
+    const statusEl = document.getElementById('receiver-share-status');
+    if (!btn) return;
 
     btn.addEventListener('click', () => {
         if (liveLocationInterval) {
@@ -455,8 +496,9 @@ async function initReceiverLiveLocation() {
 
         const sendPosition = () => {
             navigator.geolocation.getCurrentPosition(async (pos) => {
+                const token = localStorage.getItem('serviso_token');
                 try {
-                    await fetch(`${API_BASE}/receiver/live-location`, {
+                    const res = await fetch(`${API_BASE}/receiver/live-location`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -464,12 +506,17 @@ async function initReceiverLiveLocation() {
                         },
                         body: JSON.stringify({ lat: pos.coords.latitude, lon: pos.coords.longitude })
                     });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        statusEl.textContent = data.error || 'Could not send your location just now - will retry.';
+                        return;
+                    }
                     statusEl.textContent = `Sharing live location - last sent ${new Date().toLocaleTimeString()}`;
                 } catch {
-                    statusEl.textContent = 'Could not send your location just now - will retry.';
+                    statusEl.textContent = 'Could not reach the server - will retry.';
                 }
             }, () => {
-                statusEl.textContent = 'Location permission denied - the donor won\'t see you on the map.';
+                statusEl.textContent = "Location permission denied - the donor won't see you on the map.";
             });
         };
 
