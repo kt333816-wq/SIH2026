@@ -1,6 +1,6 @@
 # Serviso
 
-> **A platform where food meets the needy.**
+> **A platform where food meets the needy**
 
 Welcome to the official repository for the Serviso website! This is where the active development of the platform takes place, building a bridge between surplus food and those who need it most.
 
