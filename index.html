@@ -316,8 +316,9 @@
 
                 <!-- Receiver side: shown once matched. Displays the receiver's
                      own pickup code (they tell this to the donor in person -
-                     they never type in a code themselves), a live tracking
-                     map of the donor's pickup point, and live-location sharing. -->
+                     they never type in a code themselves), the donor's address
+                     and food quantity, a live tracking map of the donor's
+                     pickup point, and live-location sharing. -->
                 <div id="receiver-match-panel" class="pickup-match-panel hidden">
                     <p id="receiver-match-message"></p>
 
@@ -325,6 +326,8 @@
                         <p style="font-size:14px; opacity:0.8; margin-bottom: 6px;">Your pickup code - tell this to the donor at handover:</p>
                         <p id="receiver-otp-code" style="font-family:'Lilita One', sans-serif; font-size: 34px; letter-spacing: 8px; color: var(--bg-primary);"></p>
                     </div>
+
+                    <p id="receiver-donor-address" style="font-size: 14px; margin-bottom: 15px;"></p>
 
                     <div id="receiver-tracking-map" class="tracking-map"></div>
                     <p id="receiver-tracking-distance" class="tracking-distance"></p>

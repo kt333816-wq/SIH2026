@@ -422,7 +422,8 @@ function initReceiverForm() {
 // ---------------------------------------------------------------------------
 // Receiver match panel: polls for an active match (a match can appear at any
 // time after the profile is saved, not just at page load), then shows the
-// receiver's own pickup code, the tracking map, and live-location sharing.
+// receiver's own pickup code, the donor's address, the tracking map, and
+// live-location sharing.
 // ---------------------------------------------------------------------------
 let receiverMatchPollHandle = null;
 
@@ -465,6 +466,8 @@ async function checkReceiverMatch() {
     document.getElementById('receiver-match-message').textContent =
         "You've been matched! Head to the pickup point shown below and tell the donor your code once you're there.";
     document.getElementById('receiver-otp-code').textContent = currentMatch.pickup_otp || '';
+    document.getElementById('receiver-donor-address').textContent =
+        `Pickup: ${currentMatch.food_quantity || ''} at ${currentMatch.donor_address || 'address unavailable'}`;
     receiverTrackingMap.start(currentMatch.listing_id);
 }
 
